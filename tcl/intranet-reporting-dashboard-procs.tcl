@@ -498,6 +498,7 @@ ad_proc im_dashboard_histogram {
     set diagram_y_start 25
 
     set count 1
+    set status_html ""
     foreach v $values {
 
 	set bar_title [lindex $v 0]
