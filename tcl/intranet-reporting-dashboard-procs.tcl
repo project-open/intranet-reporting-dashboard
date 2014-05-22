@@ -231,8 +231,8 @@ ad_proc -public im_dashboard_histogram_sql {
     set object_subtype_id ""
     if {"" != $object_id && 0 != $object_id} {
 	im_security_alert_check_integer -location "im_dashboard_histogram_sql" -value $object_id
-	set object_type [util_memoize "db_string otype {select object_type from acs_objects where object_id = $object_id} -default {}"]
-	set object_subtype_id [util_memoize "db_string osubtype {select im_biz_object__get_type_id($object_id)} -default {}" 60]
+	set object_type [util_memoize [list db_string otype "select object_type from acs_objects where object_id = $object_id" -default {}]]
+	set object_subtype_id [util_memoize [list db_string osubtype "select im_biz_object__get_type_id($object_id)" -default {}] 60]
     }
 
     # -------------------------------------------------------
