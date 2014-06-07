@@ -732,3 +732,43 @@ ad_proc im_dashboard_histogram {
     return $histogram_html
 }
 
+
+
+
+# ---------------------------------------------------------------
+# 
+# ---------------------------------------------------------------
+
+ad_proc -public im_dashboard_top_customers {
+    {-diagram_width 580}
+    {-diagram_height 300}
+    {-diagram_max_customers 8}
+} {
+    Returns a HTML component with a pie chart with top customer
+} {
+    # Skip if Sencha is not installed
+    if {![im_sencha_extjs_installed_p]} { return "" }
+
+    # Permissions: Requires the permission to see all customers
+    set current_user_id [ad_get_user_id]
+    if {![im_permission $current_user_id view_companies_all]} { return "" }
+    if {![im_permission $current_user_id view_finance]} { return "" }
+
+    # Load the appropriate Sencha libraries
+    set diagram_title [lang::message::lookup "" intranet-reporting-dashboard.Top_Customers "All Time Top Customers"]
+    set version [im_sencha_extjs_version]
+    set ext "ext-all-debug-w-comments.js"
+    template::head::add_css -href "/sencha-$version/resources/css/ext-all.css" -media "screen" -order 1
+    template::head::add_javascript -src "/sencha-$version/$ext" -order 2
+
+    # Call the portlet page
+    set params [list \
+                    [list diagram_width $diagram_width] \
+                    [list diagram_height $diagram_height] \
+                    [list diagram_title $diagram_title] \
+                    [list diagram_max_customers $diagram_max_customers] \
+    ]
+
+    set result [ad_parse_template -params $params "/packages/intranet-reporting-dashboard/lib/top-customers"]
+    return [string trim $result]
+}
