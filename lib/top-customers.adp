@@ -11,6 +11,7 @@ Ext.onReady(function () {
             type: 'rest',
             url: '/intranet-reporting-dashboard/top-customers.json',
             extraParams: {				// Parameters to the data-source
+		diagram_interval: 'all_time',		// Number of customers to show
 		diagram_max_customers: 8,		// Number of customers to show
 		diagram_max_length_customer_name: 15	// Limit the length of the customer name
             },
@@ -54,7 +55,6 @@ Ext.onReady(function () {
                     this.setTitle(storeItem.get('name') + ':<br>' + Math.round(storeItem.get('value') / total * 100) + '%');
                 }
 	    },
-
 	    highlight: {
 		segment: { margin: 20 }
 	    }
@@ -67,22 +67,26 @@ Ext.onReady(function () {
         title: '@diagram_title@',
 	renderTo: '@diagram_id@',
         layout: 'fit',
+	header: false,
         tbar: [
 	    {
 		xtype: 'combo',
 		editable: false,
-//		fieldLabel: '<%=[lang::message::lookup "" intranet-reporting-dashboard.Interval Interval]%>',
+		// fieldLabel: '<%=[lang::message::lookup "" intranet-reporting-dashboard.Interval Interval]%>',
 		store: topCustomersIntervalStore,
 		mode: 'local',
 		displayField: 'display',
 		valueField: 'value',
 		triggerAction: 'all',
-		width:120,
+		width: 150,
 		forceSelection: true,
 		value: 'all_time',
-		toggleHandler: function() {
-		    alert('alert');
-		}
+		listeners:{select:{fn:function(combo, comboValues) {
+		    var value = comboValues[0].data.value;
+		    var extraParams = topCustomersStore.getProxy().extraParams;
+		    extraParams.diagram_interval = value;
+		    topCustomersStore.load();
+		}}}
             }
 	],
         items: topCustomersChart

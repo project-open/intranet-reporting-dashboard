@@ -755,7 +755,7 @@ ad_proc -public im_dashboard_top_customers {
     if {![im_permission $current_user_id view_finance]} { return "" }
 
     # Load the appropriate Sencha libraries
-    set diagram_title [lang::message::lookup "" intranet-reporting-dashboard.Top_Customers "All Time Top Customers"]
+    set diagram_title [lang::message::lookup "" intranet-reporting-dashboard.Top_Customers "Top Customers"]
     set version [im_sencha_extjs_version]
     set ext "ext-all-debug-w-comments.js"
     template::head::add_css -href "/sencha-$version/resources/css/ext-all.css" -media "screen" -order 1
