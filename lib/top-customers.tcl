@@ -13,8 +13,8 @@
 # defined by the calling /tcl/*.tcl libary:
 if {![info exists diagram_width]} { set diagram_width 600 }
 if {![info exists diagram_height]} { set diagram_height 400 }
-if {![info exists diagram_title]} { set diagram_height "All Time Customers" }
 if {![info exists diagram_max_customers]} { set diagram_max_customers 10 }
+if {![info exists diagram_title]} { set diagram_title [lang::message::lookup "" intranet-reporting-dashboard.Top_Cusomers "Top Customers"] }
 
 set max_length_customer_name 15
 
