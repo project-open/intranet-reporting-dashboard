@@ -37,7 +37,7 @@ switch $diagram_interval {
     last_quarter { set top_customer_interval_sql "and c.effective_date >= now()::date - 90" }
     last_month { set top_customer_interval_sql "and c.effective_date >= now()::date - 30" }
     all_time { set top_customer_interval_sql "" }
-    default - all_time {
+    default {
 	set json "{\"success\": false, \"message\": \"Invalid diagram_interval option: '$diagram_interval'.\" }"
 	doc_return 200 "text/html" $json
 	ad_script_abort

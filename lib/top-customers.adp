@@ -16,8 +16,7 @@ Ext.onReady(function () {
 		diagram_max_length_customer_name: 15	// Limit the length of the customer name
             },
             reader: { type: 'json', root: 'data' }
-	},
-	sorters: [{property: 'customer_name', direction: 'ASC'}]
+	}
     });
 
     var topCustomersIntervalStore = Ext.create('Ext.data.Store', {
