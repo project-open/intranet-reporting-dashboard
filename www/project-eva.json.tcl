@@ -24,6 +24,8 @@ if {!$read} {
 }
 
 set default_currency [ad_parameter -package_id [im_package_cost_id] "DefaultCurrency" "" "EUR"]
+set default_hourly_cost [ad_parameter -package_id [im_package_cost_id] "DefaultTimesheetHourlyCost" "" 30]
+
 
 # ----------------------------------------------------
 # Calculate diagram time points
@@ -40,7 +42,8 @@ set default_currency [ad_parameter -package_id [im_package_cost_id] "DefaultCurr
 
 set planned_value_sql "
 	select	p.*,
-		CASE WHEN duration_hours = 0 THEN 0 ELSE coalesce(planned_units, 0.0) / duration_hours END as inclination
+		CASE WHEN duration_hours = 0 THEN 0 ELSE coalesce(planned_units, 0.0) / duration_hours END as inclination,
+		CASE WHEN sum_percentage = 0 THEN 0 ELSE weighted_hourly_cost * 100.0 / sum_percentage END as hourly_cost
 	from	(
 			select	p.tree_sortkey,
 				p.project_id,
@@ -49,7 +52,21 @@ set planned_value_sql "
 				extract(epoch from p.end_date) as end_epoch,
 				(extract(epoch from coalesce(p.end_date,p.start_date)) - extract(epoch from p.start_date)) / 3600.0 as duration_hours,
 				coalesce(t.planned_units, 0.0) as planned_units,
-				t.uom_id
+				t.uom_id,
+				(	select	sum(coalesce(e.hourly_cost, :default_hourly_cost) * coalesce(bom.percentage, 0.0) * coalesce(e.availability, 100) / 10000.0)
+					from	im_biz_object_members bom,
+						acs_rels r
+						LEFT OUTER JOIN im_employees e on (r.object_id_two = e.employee_id)
+					where	r.rel_id = bom.rel_id and
+						r.object_id_one = p.project_id
+				) as weighted_hourly_cost,
+				(	select	sum(coalesce(bom.percentage, 0.0) * coalesce(e.availability, 100) / 100.0)
+					from	im_biz_object_members bom,
+						acs_rels r
+						LEFT OUTER JOIN im_employees e on (r.object_id_two = e.employee_id)
+					where	r.rel_id = bom.rel_id and
+						r.object_id_one = p.project_id
+				) as sum_percentage
 			from	im_projects main_p,
 				im_projects p
 				LEFT OUTER JOIN im_timesheet_tasks t ON (p.project_id = t.task_id)
@@ -68,7 +85,7 @@ set total_planned_value 0.0
 template::multirow foreach mr {
     set timeline_hash($start_epoch) 1
     set timeline_hash($end_epoch) 1
-    set total_planned_value [expr $total_planned_value + $planned_units]
+    set total_planned_value [expr $total_planned_value + $planned_units * $hourly_cost]
 }
 
 set timeline_list [lsort -integer [array name timeline_hash]]
@@ -92,10 +109,8 @@ template::multirow foreach mr {
 
     for {set i $start_idx} {$i < $end_idx} {incr i} {
 	set incl 0.0
-	if {[info exists inclination_hash($i)]} {
-	    set incl $inclination_hash($i)
-	}
-	set incl [expr $incl + $inclination]
+	if {[info exists inclination_hash($i)]} { set incl $inclination_hash($i) }
+	set incl [expr $incl + $inclination * $hourly_cost]
 	set inclination_hash($i) $incl
     }
 }
@@ -130,7 +145,16 @@ for {set i 0} {$i < $timeline_list_len} {incr i} {
 # Show Financial documents during intervals
 # ----------------------------------------------------
 
-set cost_type_ids [list [im_cost_type_invoice] [im_cost_type_quote] [im_cost_type_order] [im_cost_type_timesheet]]
+set cost_type_ids [list [im_cost_type_invoice] [im_cost_type_quote] [im_cost_type_po] [im_cost_type_timesheet]]
+set cost_type_names [list "invoice" "quote" "order" "timesheet"]
+
+
+for {set i 0} {$i < [llength $cost_type_ids]} {incr i} { 
+    set cost_type_id [lindex $cost_type_ids $i]
+    set cost_type_name [lindex $cost_type_names $i]
+    set cost_type_hash($cost_type_id) $cost_type_name
+}
+
 set timesheet_sql "
 	select	main_p.project_budget,
 		main_p.project_budget_hours,
@@ -153,6 +177,16 @@ db_foreach ts $timesheet_sql {
 
     # Initiate the index to the timeline
     if {$cost_type_id != $old_cost_type_id} {
+
+	# Fill the cost_hash until the end of the last cost_type_id
+	while {0 != $old_cost_type_id && $ctr < $timeline_list_len} {
+	    ns_log Notice "project-eva.json: fill: ctr=$ctr, cost_type_id=$cost_type_id, amount=$amount"
+	    incr ctr
+	    set key "$old_cost_type_id-$ctr"
+	    set cost_hash($key) $value
+	}
+
+	set value 0.0
 	set ctr 0
 	set ctr_epoch [lindex $timeline_list $ctr]
 	set old_cost_type_id $cost_type_id
@@ -168,11 +202,19 @@ db_foreach ts $timesheet_sql {
 
     # Update the hash
     set key "$cost_type_id-$ctr"
-    set value 0.0
-    if {[info exists cost_hash($key)]} { set value $cost_hash($key) }
     set value [expr $value + $amount]
     set cost_hash($key) $value
 }
+
+# Fill the cost_hash until the end of the last cost_type_id
+while {0 != $old_cost_type_id && $ctr < $timeline_list_len} {
+    ns_log Notice "project-eva.json: fill: ctr=$ctr, cost_type_id=$cost_type_id, amount=$amount"
+    incr ctr
+    set key "$old_cost_type_id-$ctr"
+    set cost_hash($key) $value
+}
+
+
 
 # ----------------------------------------------------
 # Create JSON for data source
@@ -192,7 +234,7 @@ foreach epoch $timeline_list {
 	set key "$cost_type_id-$ctr"
 	set value 0.0
 	if {[info exists cost_hash($key)]} { set value $cost_hash($key) }
-	lappend json_values "'cost_type_$cost_type_id': $value"
+	lappend json_values "'$cost_type_hash($cost_type_id)': $value"
     }
 
     lappend json_lines "{[join $json_values ", "]}"

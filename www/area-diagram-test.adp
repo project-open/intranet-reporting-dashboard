@@ -1,6 +1,6 @@
 <master>
 <link rel='stylesheet' href='/sencha-extjs-v421/resources/css/ext-all.css'  type='text/css' media='screen'>
-<script type='text/javascript' src='/sencha-extjs-v421/ext-all.js'></script>
+<script type='text/javascript' src='/sencha-extjs-v421-dev/ext-all-debug-w-comments.js'></script>
 <div id=diagram_12345></div>
 <script type='text/javascript'>
 
@@ -8,12 +8,12 @@ Ext.require(['Ext.chart.*', 'Ext.Window', 'Ext.fx.target.Sprite', 'Ext.layout.co
 Ext.onReady(function () {
     
 	projectEvaStore = Ext.create('Ext.data.Store', {
-		fields: ['date', 'planned_value', 'total_planned_value', 'cost_type_3700', 'cost_type_3702', 'cost_type_3703', 'cost_type_3718'],
+		fields: ['date', 'planned_value', 'invoices', 'cost_type_3702', 'cost_type_3703', 'cost_type_3718'],
 		data: [
-	{'date': '2014-06-16 09:00:00', 'planned_value': 0.0, 'total_planned_value': 80.0, 'cost_type_3700': 0.0, 'cost_type_3702': 0.0, 'cost_type_3703': 0.0, 'cost_type_3718': 0.0},
-	{'date': '2014-06-18 09:00:00', 'planned_value': 0.0, 'total_planned_value': 80.0, 'cost_type_3700': 0.0, 'cost_type_3702': 0.0, 'cost_type_3703': 0.0, 'cost_type_3718': 510.0},
-	{'date': '2014-06-19 19:00:00', 'planned_value': 16.0, 'total_planned_value': 80.0, 'cost_type_3700': 0.0, 'cost_type_3702': 0.0, 'cost_type_3703': 0.0, 'cost_type_3718': 270.0},
-	{'date': '2014-06-23 09:00:00', 'planned_value': 16.0, 'total_planned_value': 80.0, 'cost_type_3700': 0.0, 'cost_type_3702': 0.0, 'cost_type_3703': 0.0, 'cost_type_3718': 0.0}
+	{'date': '2014-06-16 09:00:00', 'planned_value': 0.0, 'invoices': 0.0, 'cost_type_3702': 0.0, 'cost_type_3703': 0.0, 'cost_type_3718': 0.0},
+	{'date': '2014-06-18 09:00:00', 'planned_value': 0.0, 'invoices': 10000.0, 'cost_type_3702': 1000.0, 'cost_type_3703': 0.0, 'cost_type_3718': 510.0},
+	{'date': '2014-06-19 19:00:00', 'planned_value': 16000.0, 'invoices': 15000.0, 'cost_type_3702': 5000.0, 'cost_type_3703': 0.0, 'cost_type_3718': 270.0},
+	{'date': '2014-06-23 09:00:00', 'planned_value': 16000.0, 'invoices': 25000.0, 'cost_type_3702': 1000.0, 'cost_type_3703': 0.0, 'cost_type_3718': 0.0}
 		       ]
 	    });
 
@@ -29,10 +29,7 @@ Ext.onReady(function () {
 			position: 'left',
 			fields: [
 				 'planned_value', 
-				 'cost_type_3700', 
-				 'cost_type_3702', 
-				 'cost_type_3703', 
-				 'cost_type_3718'
+				 'invoices'
 				 ]
 		    }, {
 			type: 'Time',
@@ -44,76 +41,8 @@ Ext.onReady(function () {
 			type: 'area',
 			axis: 'left',
 			xField: 'date',
-			yField: 'planned_value',
+			yField: ['planned_value', 'invoices', 'cost_type_3702', 'cost_type_3703', 'cost_type_3718'],
 			highlight: true
-		    }, {
-			// Planned Value Series
-			title: 'axis_title_planned_value_l10n',
-			type: 'line',
-			axis: 'left',
-			xField: 'date',
-			yField: 'planned_value',
-			showMarkers: false,
-			tips: {
-			    trackMouse: false,
-			    renderer: function(storeItem, item) {
-				this.setTitle(storeItem.get('date'));
-				this.update(storeItem.get('planned_value'));
-			    }
-			},
-			style: {
-			    fill: '#38B8BF',
-			    stroke: '#38B8BF',
-			    'stroke-width': 3
-			},
-			markerConfig: {
-			    type: 'circle',
-			    size: 4,
-			    radius: 4,
-			    'stroke-width': 0,
-			    fill: '#38B8BF',
-			    stroke: '#38B8BF'
-			}
-		    }, {
-			// Horizontal line for total planned value
-			type: 'line',
-			title: 'axis_title_total_planned_value_l10n',
-			axis: 'left',
-			xField: 'date',
-			yField: 'total_planned_value',
-			showMarkers: false,
-			tips: {
-			    trackMouse: false,
-			    renderer: function(storeItem, item) {
-				this.setTitle(storeItem.get('date'));
-				this.update(storeItem.get('total_planned_value'));
-			    }
-			},
-			style: {
-			    fill: '#FF0000',
-			    stroke: '#FF0000',
-			    'stroke-width': 1
-			}
-		    }, {
-			// Timesheet Cost
-			type: 'line',
-			title: 'axis_title_timesheet_cost_l10n',
-			axis: 'left',
-			xField: 'date',
-			yField: 'cost_type_3718',
-			showMarkers: false,
-			tips: {
-			    trackMouse: false,
-			    renderer: function(storeItem, item) {
-				this.setTitle(storeItem.get('date'));
-				this.update(storeItem.get('total_planned_value'));
-			    }
-			},
-			style: {
-			    fill: '#FF0000',
-			    stroke: '#FF0000',
-			    'stroke-width': 1
-			}
 		    }]
 	    });
 
