@@ -756,10 +756,9 @@ ad_proc -public im_dashboard_top_customers {
 
     # Load the appropriate Sencha libraries
     set diagram_title [lang::message::lookup "" intranet-reporting-dashboard.Top_Customers "Top Customers"]
-    set version [im_sencha_extjs_version]
-    set ext "ext-all-debug-w-comments.js"
-    template::head::add_css -href "/sencha-$version/resources/css/ext-all.css" -media "screen" -order 1
-    template::head::add_javascript -src "/sencha-$version/$ext" -order 2
+
+    # Load Sencha libraries
+    im_sencha_extjs_load_libraries
 
     # Call the portlet page
     set params [list \
@@ -772,3 +771,38 @@ ad_proc -public im_dashboard_top_customers {
     set result [ad_parse_template -params $params "/packages/intranet-reporting-dashboard/lib/top-customers"]
     return [string trim $result]
 }
+
+
+
+
+
+
+# ---------------------------------------------------------------
+# 
+# ---------------------------------------------------------------
+
+ad_proc -public im_dashboard_project_eva {
+    -project_id:required
+    {-diagram_width 580}
+    {-diagram_height 300}
+} {
+    Returns a HTML component with a timeline of a project with
+    financial information associated.
+} {
+    # Sencha check and permissions
+    if {![im_sencha_extjs_installed_p]} { return "" }
+    set current_user_id [ad_get_user_id]
+    if {![im_permission $current_user_id view_finance]} { return "" }
+    im_sencha_extjs_load_libraries
+
+    # Call the portlet page
+    set params [list \
+                    [list diagram_project_id $project_id] \
+                    [list diagram_width $diagram_width] \
+                    [list diagram_height $diagram_height] \
+    ]
+
+    set result [ad_parse_template -params $params "/packages/intranet-reporting-dashboard/lib/project-eva"]
+    return [string trim $result]
+}
+
