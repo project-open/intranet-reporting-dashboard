@@ -37,10 +37,10 @@ set default_hourly_cost [ad_parameter -package_id [im_package_cost_id] "DefaultT
 # in the diagram.
 # Then we define for each timeline "segment" the "inclination" of the curve,
 # as defined by the resource consumption over time.
-# As a result, we can draw the planned_value curve and compare it with 
+# As a result, we can draw the planned_ts_value curve and compare it with 
 # values from the past.
 
-set planned_value_sql "
+set planned_ts_value_sql "
 	select	p.*,
 		CASE WHEN duration_hours = 0 THEN 0 ELSE coalesce(planned_units, 0.0) / duration_hours END as inclination,
 		CASE WHEN sum_percentage = 0 THEN 0 ELSE weighted_hourly_cost * 100.0 / sum_percentage END as hourly_cost
@@ -77,15 +77,15 @@ set planned_value_sql "
 	order by p.tree_sortkey
 "
 # Write the results into a multirow, because we'll need it twice
-db_multirow mr planned_value_sql $planned_value_sql
+db_multirow mr planned_ts_value_sql $planned_ts_value_sql
 
 
 # First pass: Collect all start and end points of project tasks
-set total_planned_value 0.0
+set total_planned_ts_value 0.0
 template::multirow foreach mr {
     set timeline_hash($start_epoch) 1
     set timeline_hash($end_epoch) 1
-    set total_planned_value [expr $total_planned_value + $planned_units * $hourly_cost]
+    set total_planned_ts_value [expr $total_planned_ts_value + $planned_units * $hourly_cost]
 }
 
 set timeline_list [lsort -integer [array name timeline_hash]]
@@ -124,8 +124,8 @@ template::multirow foreach mr {
 
 set timeline_list_len [expr [llength $timeline_list] - 1]
 set value 0.0
-array set planned_value_hash {}
-set planned_value_hash(0) $value
+array set planned_ts_value_hash {}
+set planned_ts_value_hash(0) $value
 for {set i 0} {$i < $timeline_list_len} {incr i} {
     set start_epoch [lindex $timeline_list $i]
     set end_epoch [lindex $timeline_list [expr $i+1]]
@@ -137,7 +137,7 @@ for {set i 0} {$i < $timeline_list_len} {incr i} {
     set value [expr $value + $delta]
 
     ns_log Notice "project-eva: i=$i: start:[im_date_epoch_to_ansi $start_epoch] [im_date_epoch_to_time $start_epoch], end:[im_date_epoch_to_ansi $end_epoch] [im_date_epoch_to_time $end_epoch], duration_hours=$duration_hours, inclination=$inclination, delta=$delta, value=$value"
-    set planned_value_hash([expr $i+1]) $value
+    set planned_ts_value_hash([expr $i+1]) $value
 }
 
 
@@ -145,14 +145,9 @@ for {set i 0} {$i < $timeline_list_len} {incr i} {
 # Show Financial documents during intervals
 # ----------------------------------------------------
 
-set cost_type_ids [list [im_cost_type_invoice] [im_cost_type_quote] [im_cost_type_po] [im_cost_type_timesheet]]
-set cost_type_names [list "invoice" "quote" "order" "timesheet"]
-
-
-for {set i 0} {$i < [llength $cost_type_ids]} {incr i} { 
-    set cost_type_id [lindex $cost_type_ids $i]
-    set cost_type_name [lindex $cost_type_names $i]
-    set cost_type_hash($cost_type_id) $cost_type_name
+set cost_type_sql "select * from im_cost_types"
+db_foreach cost_types $cost_type_sql {
+    set cost_type_hash($cost_type_id) $short_name
 }
 
 set timesheet_sql "
@@ -165,8 +160,7 @@ set timesheet_sql "
 		im_costs c
 	where	main_p.project_id = :diagram_project_id and
 		p.tree_sortkey between main_p.tree_sortkey and tree_right(main_p.tree_sortkey) and
-		c.project_id = p.project_id and
-		c.cost_type_id in ([join $cost_type_ids ", "])
+		c.project_id = p.project_id
 	order by
 		c.cost_type_id,
 		c.effective_date
@@ -223,14 +217,16 @@ while {0 != $old_cost_type_id && $ctr < $timeline_list_len} {
 set ctr 0
 set json_lines {}
 foreach epoch $timeline_list {
-    set planned_value [expr round(100.0 * $planned_value_hash($ctr)) / 100.0]
+    set planned_ts_value [expr round(100.0 * $planned_ts_value_hash($ctr)) / 100.0]
 
     set json_values [list]
     lappend json_values "'date': '[im_date_epoch_to_ansi $epoch] [im_date_epoch_to_time $epoch]'"
-    lappend json_values "'planned_value': $planned_value"
-    lappend json_values "'total_planned_value': $total_planned_value"
+    lappend json_values "'planned_ts_value': $planned_ts_value"
+    lappend json_values "'total_planned_ts_value': $total_planned_ts_value"
 
-    foreach cost_type_id $cost_type_ids {
+    foreach cost_type_id [array names cost_type_hash] {
+	set cost_type_name $cost_type_hash($cost_type_id)
+	if {"unknown" == $cost_type_name} { continue }
 	set key "$cost_type_id-$ctr"
 	set value 0.0
 	if {[info exists cost_hash($key)]} { set value $cost_hash($key) }
