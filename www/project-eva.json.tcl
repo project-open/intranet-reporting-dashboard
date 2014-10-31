@@ -26,6 +26,7 @@ if {!$read} {
 set default_currency [ad_parameter -package_id [im_package_cost_id] "DefaultCurrency" "" "EUR"]
 set default_hourly_cost [ad_parameter -package_id [im_package_cost_id] "DefaultTimesheetHourlyCost" "" 30]
 
+set message "Data loaded"
 
 # ----------------------------------------------------
 # Calculate diagram time points
@@ -85,6 +86,11 @@ set total_planned_ts_value 0.0
 template::multirow foreach mr {
     set timeline_hash($start_epoch) 1
     set timeline_hash($end_epoch) 1
+    if {"" == $hourly_cost} {
+	ns_log Error "project-eva.json.tcl: found empty hourly_cost project project #$project_id, using default=$default_hourly_cost"
+	set message "Data loaded. Warning: Using default hourly_cost=$default_hourly_cost"
+	set hourly_cost $default_hourly_cost
+    }
     set total_planned_ts_value [expr $total_planned_ts_value + $planned_units * $hourly_cost]
 }
 
@@ -237,7 +243,7 @@ foreach epoch $timeline_list {
     incr ctr
 }
 
-set json "{\"success\": true, \"message\": \"Data loaded\", \"data\": \[\n[join $json_lines ",\n"]\n\]}"
+set json "{\"success\": true, \"message\": \"$message\", \"data\": \[\n[join $json_lines ",\n"]\n\]}"
 doc_return 200 "text/html" $json
 
 
