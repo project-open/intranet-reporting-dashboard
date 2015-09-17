@@ -714,7 +714,6 @@ ad_proc im_dashboard_histogram {
 	$diag.SetBorder(0, $max_value*1.1, $value_total_items+1, 0);
 	$diag.XScale=1;
 	$diag.YScale=0;
-	$histogram_name_html
 	$diag.Draw(\"#$bar_bg_color\", \"#$bar_text_color\", false,\"\");
 	$status_html
 	delete $diag;
