@@ -24,7 +24,7 @@ if {![im_permission $current_user_id view_companies_all] || ![im_permission $cur
     ad_script_abort
 }
 
-set default_currency [ad_parameter -package_id [im_package_cost_id] "DefaultCurrency" "" "EUR"]
+set default_currency [im_parameter -package_id [im_package_cost_id] "DefaultCurrency" "" "EUR"]
 
 # ----------------------------------------------------
 # Multirow as temporary store

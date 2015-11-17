@@ -27,5 +27,5 @@ set max_length_customer_name 15
 set diagram_rand [expr round(rand() * 100000000.0)]
 set diagram_id "top_customers_$diagram_rand"
 
-set default_currency [ad_parameter -package_id [im_package_cost_id] "DefaultCurrency" "" "EUR"]
+set default_currency [im_parameter -package_id [im_package_cost_id] "DefaultCurrency" "" "EUR"]
 
