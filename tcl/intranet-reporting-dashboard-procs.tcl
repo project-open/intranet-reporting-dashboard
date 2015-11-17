@@ -362,7 +362,7 @@ ad_proc im_dashboard_color {
 } {
     Returns suitable colors, depending on the respective skin
 } {
-    set skin_name [im_user_skin [ad_get_user_id]]
+    set skin_name [im_user_skin [ad_conn user_id]]
 
     if {[catch {
         set procname "im_dashboard_color_$skin_name"
@@ -749,7 +749,7 @@ ad_proc -public im_dashboard_top_customers {
     if {![im_sencha_extjs_installed_p]} { return "" }
 
     # Permissions: Requires the permission to see all customers
-    set current_user_id [ad_get_user_id]
+    set current_user_id [ad_conn user_id]
     if {![im_permission $current_user_id view_companies_all]} { return "" }
     if {![im_permission $current_user_id view_finance]} { return "" }
 
@@ -790,7 +790,7 @@ ad_proc -public im_dashboard_project_eva {
 } {
     # Sencha check and permissions
     if {![im_sencha_extjs_installed_p]} { return "" }
-    set current_user_id [ad_get_user_id]
+    set current_user_id [ad_conn user_id]
     if {![im_permission $current_user_id view_finance]} { return "" }
     im_sencha_extjs_load_libraries
 

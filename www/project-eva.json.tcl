@@ -15,7 +15,7 @@ ad_page_contract {
 # Defaults & Permissions
 # ----------------------------------------------------
 
-set current_user_id [ad_get_user_id]
+set current_user_id [ad_conn user_id]
 im_project_permissions $current_user_id $diagram_project_id view read write admin
 if {!$read} {
     set json "{\"success\": false, \"message\": \"Insufficient permissions - you need read permissions for project #$diagram_project_id.\" }"
