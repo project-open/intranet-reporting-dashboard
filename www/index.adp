@@ -1,26 +1,26 @@
-<master src="../../intranet-core/www/master">
+<master>
 <property name="title">@page_title@</property>
-<property name="context_bar">@context_bar;noquote@</property>
-<property name="dashboard">home</property>
-<property name="focus">@page_focus;noquote@</property>
+<property name="main_navbar_label">projects</property>
+<property name="left_navbar">@left_navbar_html;noquote@</property>
 
-<h2>@page_title@</h2>
-<SCRIPT Language=JavaScript src=/resources/diagram/diagram/diagram.js></SCRIPT>
+<h1><%=[lang::message::lookup "" intranet-reporting-dashboard.Dashboard "Dashboard"]%></h1>
+
+<%= [im_component_bay top] %>
 <table cellpadding=0 cellspacing=0 border=0 width="100%">
 <tr>
-  <td valign=top width="50%">
-<%= [im_component_bay left] %>
+  <td valign=top width='50%'>
+      <%= [im_component_bay left] %>
   </td>
-  <td width=2>&nbsp;</td>
-  <td valign=top width="50%">
-<%= [im_component_bay right] %>
+  <td width='5px'>&nbsp;</td>
+  <td valign=top>
+      <%= [im_component_bay right] %>
   </td>
 </tr>
 </table><br>
 
 <table cellpadding=0 cellspacing=0 border=0 width="100%">
 <tr><td>
+  <!-- Bottom Component Bay -->
   <%= [im_component_bay bottom] %>
 </td></tr>
 </table>
-
