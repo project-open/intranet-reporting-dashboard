@@ -67,7 +67,7 @@ db_foreach top_customers $top_customers_sql {
     if {$count < $diagram_max_customers} {
 	multirow append top_customers $customer_name_limited $customer_revenues
     } else {
-	set other_revenues [expr $other_revenues + $customer_revenues]
+	set other_revenues [expr {$other_revenues + $customer_revenues}]
     }
 
     incr count

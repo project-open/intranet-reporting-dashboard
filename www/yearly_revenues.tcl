@@ -65,7 +65,7 @@ template::diagram::create \
 	}
     } 
 
-if {[exists_and_not_null csv]} {
+if {([info exists csv] && $csv ne "")} {
     template::diagram::write_output -name dia1
 }
 

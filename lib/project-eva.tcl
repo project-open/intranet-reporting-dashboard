@@ -20,7 +20,7 @@ if {![info exists diagram_project_id]} {
 }
 
 # Create a random ID for the diagram
-set diagram_rand [expr round(rand() * 100000000.0)]
+set diagram_rand [expr {round(rand() * 100000000.0)}]
 set diagram_id "project_eva_$diagram_rand"
 set default_currency [im_parameter -package_id [im_package_cost_id] "DefaultCurrency" "" "EUR"]
 

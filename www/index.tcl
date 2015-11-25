@@ -34,7 +34,7 @@ ad_page_contract {
 # Defaults & Security
 # ---------------------------------------------------------------------
 set show_context_help_p 0
-set user_id [ad_maybe_redirect_for_registration]
+set user_id [auth::require_login]
 set return_url [im_url_with_query]
 set current_url [ns_conn url]
 set site_wide_admin_p [im_is_user_site_wide_or_intranet_admin $user_id]

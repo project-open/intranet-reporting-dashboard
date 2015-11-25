@@ -91,7 +91,7 @@ template::multirow foreach mr {
 	set message "Data loaded. Warning: Using default hourly_cost=$default_hourly_cost"
 	set hourly_cost $default_hourly_cost
     }
-    set total_planned_ts_value [expr $total_planned_ts_value + $planned_units * $hourly_cost]
+    set total_planned_ts_value [expr {$total_planned_ts_value + $planned_units * $hourly_cost}]
 }
 
 set timeline_list [lsort -integer [array name timeline_hash]]
@@ -116,7 +116,7 @@ template::multirow foreach mr {
     for {set i $start_idx} {$i < $end_idx} {incr i} {
 	set incl 0.0
 	if {[info exists inclination_hash($i)]} { set incl $inclination_hash($i) }
-	set incl [expr $incl + $inclination * $hourly_cost]
+	set incl [expr {$incl + $inclination * $hourly_cost}]
 	set inclination_hash($i) $incl
     }
 }
@@ -128,22 +128,22 @@ template::multirow foreach mr {
 # ----------------------------------------------------
 
 
-set timeline_list_len [expr [llength $timeline_list] - 1]
+set timeline_list_len [expr {[llength $timeline_list] - 1}]
 set value 0.0
 array set planned_ts_value_hash {}
 set planned_ts_value_hash(0) $value
 for {set i 0} {$i < $timeline_list_len} {incr i} {
     set start_epoch [lindex $timeline_list $i]
-    set end_epoch [lindex $timeline_list [expr $i+1]]
+    set end_epoch [lindex $timeline_list $i+1]
 
     set inclination 0.0
     if {[info exists inclination_hash($i)]} { set inclination $inclination_hash($i) }
     set duration_hours [expr ($end_epoch - $start_epoch) / 3600.0]
-    set delta [expr $duration_hours * $inclination]
-    set value [expr $value + $delta]
+    set delta [expr {$duration_hours * $inclination}]
+    set value [expr {$value + $delta}]
 
     ns_log Notice "project-eva: i=$i: start:[im_date_epoch_to_ansi $start_epoch] [im_date_epoch_to_time $start_epoch], end:[im_date_epoch_to_ansi $end_epoch] [im_date_epoch_to_time $end_epoch], duration_hours=$duration_hours, inclination=$inclination, delta=$delta, value=$value"
-    set planned_ts_value_hash([expr $i+1]) $value
+    set planned_ts_value_hash([expr {$i+1}]) $value
 }
 
 
@@ -202,7 +202,7 @@ db_foreach ts $timesheet_sql {
 
     # Update the hash
     set key "$cost_type_id-$ctr"
-    set value [expr $value + $amount]
+    set value [expr {$value + $amount}]
     set cost_hash($key) $value
 }
 
@@ -223,7 +223,7 @@ while {0 != $old_cost_type_id && $ctr < $timeline_list_len} {
 set ctr 0
 set json_lines {}
 foreach epoch $timeline_list {
-    set planned_ts_value [expr round(100.0 * $planned_ts_value_hash($ctr)) / 100.0]
+    set planned_ts_value [expr {round(100.0 * $planned_ts_value_hash($ctr)) / 100.0}]
 
     set json_values [list]
     lappend json_values "'date': '[im_date_epoch_to_ansi $epoch] [im_date_epoch_to_time $epoch]'"

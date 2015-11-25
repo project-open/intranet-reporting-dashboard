@@ -23,7 +23,7 @@ ad_proc -public v {
     instead of an error.
 } {
     upvar $var_name var
-    if [exists_and_not_null var] { return $var }
+    if {([info exists var] && $var ne "")} { return $var }
     return $undef
 }
 
@@ -62,12 +62,12 @@ ad_proc -public im_dashboard_all_time_top_customers_component {
     Returns a dashboard component for the home page
 } {
     set menu_label "reporting-cubes-finance"
-    set current_user_id [ad_maybe_redirect_for_registration]
+    set current_user_id [auth::require_login]
     set read_p [db_string report_perms "
         select  im_object_permission_p(m.menu_id, :current_user_id, 'read')
         from    im_menus m where m.label = :menu_label
     " -default 'f']
-    if {![string equal "t" $read_p]} { return "" }
+    if {"t" ne $read_p } { return "" }
 
     set params [list \
 		    [list return_url [im_url_with_query]] \
@@ -94,12 +94,12 @@ ad_proc -public im_dashboard_generic_component {
     Returns a dashboard component for the home page
 } {
     set menu_label "reporting-cubes-finance"
-    set current_user_id [ad_maybe_redirect_for_registration]
+    set current_user_id [auth::require_login]
     set read_p [db_string report_perms "
         select  im_object_permission_p(m.menu_id, :current_user_id, 'read')
         from    im_menus m where m.label = :menu_label
     " -default 'f']
-    if {![string equal "t" $read_p]} { return "" }
+    if {"t" ne $read_p } { return "" }
 
     if {"" == $start_date} { set start_date [db_string start "select to_char(now()::date-10000, 'YYYY-MM-01')"] }
     if {"" == $end_date} { set end_date [db_string start "select to_char(now()::date+60, 'YYYY-MM-01')"] }
@@ -163,7 +163,7 @@ ad_proc -public im_dashboard_status_matrix {
     foreach stid $status_list {
 	set status [im_category_from_id -empty_default $new_msg $stid]
 	if {0 != $max_category_len} { 
-	    set status [string range $status 0 [expr $max_category_len-1]] 
+	    set status [string range $status 0 $max_category_len-1] 
 	}
 	append html "<td><b>$status</b></td>\n"
     }
@@ -181,7 +181,7 @@ ad_proc -public im_dashboard_status_matrix {
 	append html "</tr>\n"
     }
     if {"" != $description} {
-	set colspan [expr [llength $status_list] + 1]
+	set colspan [expr {[llength $status_list] + 1}]
 	append html "<tr><td colspan=$colspan align=center>\n$description\n</td></tr>\n"
     }
     append html "</table>\n"
@@ -285,12 +285,12 @@ ad_proc -public im_dashboard_histogram_sql {
     if {"" == $menu_label} { 
 	set read_p "t" 
     } else {
-	set current_user_id [ad_maybe_redirect_for_registration]
+	set current_user_id [auth::require_login]
 	set read_p [db_string report_perms "
 	        select  im_object_permission_p(m.menu_id, :current_user_id, 'read')
 	        from    im_menus m where m.label = :menu_label
         " -default 'f']
-	if {![string equal "t" $read_p]} { return "" }
+	if {"t" ne $read_p } { return "" }
     }
 
     set values [db_list_of_lists dashboard_historgram $sql_subst]
@@ -313,12 +313,12 @@ ad_proc -public im_dashboard_active_projects_status_histogram {
     Returns a dashboard component for the home page
 } {
     set menu_label "reporting-cubes-finance"
-    set current_user_id [ad_maybe_redirect_for_registration]
+    set current_user_id [auth::require_login]
     set read_p [db_string report_perms "
         select  im_object_permission_p(m.menu_id, :current_user_id, 'read')
         from    im_menus m where m.label = :menu_label
     " -default 'f']
-    if {![string equal "t" $read_p]} { return "" }
+    if {"t" ne $read_p } { return "" }
 
     set sql "
         select
@@ -451,23 +451,23 @@ ad_proc im_dashboard_pie_colors {
     set blue_end [expr 16 * [string first [string range $end_color 4 4] $h]]
     set blue_end [expr $blue_end + [string first [string range $end_color 5 5] $h]]
 
-    set max [expr $max_entries + 1]
+    set max [expr {$max_entries + 1}]
 
-    set blue_incr [expr 1.0 * ($blue_end - $blue_start) / $max]
-    set red_incr [expr 1.0 * ($red_end - $red_start) / $max]
-    set green_incr [expr 1.0 * ($green_end - $green_start) / $max]
+    set blue_incr [expr {1.0 * ($blue_end - $blue_start) / $max}]
+    set red_incr [expr {1.0 * ($red_end - $red_start) / $max}]
+    set green_incr [expr {1.0 * ($green_end - $green_start) / $max}]
 
     for {set i 0} {$i <= $max_entries} {incr i} {
-        set blue [expr round($blue_start + round($i*$blue_incr))]
-        set red [expr round($red_start + round($i*$red_incr))]
-        set green [expr round($green_start + round($i*$green_incr))]
+        set blue [expr {round($blue_start + round($i*$blue_incr))}]
+        set red [expr {round($red_start + round($i*$red_incr))}]
+        set green [expr {round($green_start + round($i*$green_incr))}]
     
-        set red_low [expr $red % 16]
-        set red_high [expr round($red / 16)]
-        set blue_low [expr $blue % 16]
-        set blue_high [expr round($blue / 16)]
-        set green_low [expr $green % 16]
-        set green_high [expr round($green / 16)]
+        set red_low [expr {$red % 16}]
+        set red_high [expr {round($red / 16)}]
+        set blue_low [expr {$blue % 16}]
+        set blue_high [expr {round($blue / 16)}]
+        set green_low [expr {$green % 16}]
+        set green_high [expr {round($green / 16)}]
     
         set col "\#[string range $h $red_high $red_high][string range $h $red_low $red_low]"
         append col "[string range $h $green_high $green_high][string range $h $green_low $green_low]"
@@ -514,18 +514,18 @@ ad_proc im_dashboard_pie_chart {
     if {"" == $font_color} { set font_color [im_dashboard_color -type "pie_text_color"] }
     if {[llength $values] < $max_entries} { set max_entries [llength $values] }
 
-    set perc_x_start [expr $outer_distance + 2 * $radius + $outer_distance]
-    set perc_x_end [expr $perc_x_start + $perc_x_size]
+    set perc_x_start [expr {$outer_distance + 2 * $radius + $outer_distance}]
+    set perc_x_end [expr {$perc_x_start + $perc_x_size}]
 
-    set bar_x_start [expr $perc_x_end + $bar_distance]
-    set bar_x_end [expr $bar_x_start + $bar_x_size]
+    set bar_x_start [expr {$perc_x_end + $bar_distance}]
+    set bar_x_end [expr {$bar_x_start + $bar_x_size}]
 
-    set diagram_x_size [expr $bar_x_end + $outer_distance]
-    set diagram_y_size [expr $outer_distance + ($max_entries+1) * ($bar_y_size + $bar_distance) + $outer_distance]
-    set diagram_y_size_circle [expr $outer_distance + 2*$radius + $outer_distance]
+    set diagram_x_size [expr {$bar_x_end + $outer_distance}]
+    set diagram_y_size [expr {$outer_distance + ($max_entries+1) * ($bar_y_size + $bar_distance) + $outer_distance}]
+    set diagram_y_size_circle [expr {$outer_distance + 2*$radius + $outer_distance}]
     if {$diagram_y_size_circle > $diagram_y_size} { set diagram_y_size $diagram_y_size_circle }
     
-    if {"" == $bar_text_limit} { set bar_text_limit [expr round($bar_x_size / $font_size)] }
+    if {"" == $bar_text_limit} { set bar_text_limit [expr {round($bar_x_size / $font_size)}] }
 
     # Get a range of suitable colors
     array set pie_colors [im_dashboard_pie_colors \
@@ -538,7 +538,7 @@ ad_proc im_dashboard_pie_chart {
     set pie_sum 0
     foreach value $values {
         set val [lindex $value 1]
-        set pie_sum [expr $pie_sum + $val]
+        set pie_sum [expr {$pie_sum + $val}]
     }
     if {0 == $pie_sum} { set pie_sum 0.00001}
     
@@ -555,25 +555,25 @@ ad_proc im_dashboard_pie_chart {
 
         set key [lindex $pie_degree 0]
         set val [lindex $pie_degree 1]
-        set perc [expr round($val * 1000.0 / $pie_sum) / 10.0]
-        set degrees [expr $val * 360.0 / $pie_sum]
+        set perc [expr {round($val * 1000.0 / $pie_sum) / 10.0}]
+        set degrees [expr {$val * 360.0 / $pie_sum}]
 
         if {$count == $max_entries} { 
 	    # "Other" section - fill the circle
 	    set key "Other"
-	    set degrees [expr 360.0 - $angle]
-	    set perc [expr round(1000.0 * $degrees / 360.0) / 10.0]
+	    set degrees [expr {360.0 - $angle}]
+	    set perc [expr {round(1000.0 * $degrees / 360.0) / 10.0}]
 	}
 
         set col $pie_colors($count)
-        append pie_pieces_html "P\[$count\]=new Pie([expr $radius+$outer_distance], [expr $radius+$outer_distance], 0, $radius, [expr $angle-0.3], [expr $angle+$degrees+0.3], \"$col\");\n"
+        append pie_pieces_html "P\[$count\]=new Pie([expr {$radius+$outer_distance}], [expr {$radius+$outer_distance}], 0, $radius, [expr {$angle-0.3}], [expr {$angle+$degrees+0.3}], \"$col\");\n"
 
-        set angle [expr $angle+$degrees]
+        set angle [expr {$angle+$degrees}]
         set perc_text "${perc}%"
         set pie_text [string range $key 0 $bar_text_limit]
 
-	set perc_y_start [expr $outer_distance + $count * ($bar_y_size + $bar_distance)]
-	set perc_y_end [expr $perc_y_start + $bar_y_size]
+	set perc_y_start [expr {$outer_distance + $count * ($bar_y_size + $bar_distance)}]
+	set perc_y_end [expr {$perc_y_start + $bar_y_size}]
 	set bar_y_start $perc_y_start
 	set bar_y_end $perc_y_end
 
@@ -643,21 +643,21 @@ ad_proc im_dashboard_histogram {
     set max_value 0
 
     # Generate a random name for the diagram. Cut off ".0" float extension.
-    regexp {([0-9]*)} [expr 1E12 * rand()] match diag
+    regexp {([0-9]*)} [expr {1E12 * rand()}] match diag
     set diag "D$diag"
 
     foreach v $values {
 	incr value_data_sets
-	set value_total_items [expr $value_total_items + [llength $v]]
+	set value_total_items [expr {$value_total_items + [llength $v]}]
 	set v_vals [lrange $v 1 end]
 	foreach v_val $v_vals {
 	    if {$v_val > $max_value} { set max_value $v_val}
 	}
     }
-    set value_data_len [expr $value_total_items - $value_data_sets]
+    set value_data_len [expr {$value_total_items - $value_data_sets}]
 
     set diagram_x_size $diagram_width
-    set diagram_y_size [expr 2*$outer_distance + $value_total_items*($bar_width + $bar_distance)]
+    set diagram_y_size [expr {2*$outer_distance + $value_total_items*($bar_width + $bar_distance)}]
     set diagram_y_start 25
 
     set status_html ""
@@ -700,12 +700,12 @@ ad_proc im_dashboard_histogram {
     # make the diagram a bit smaller and start a bit higher if the name is empty
     if {"" == $name} { 
 	set histogram_name_html ""
-	set diagram_y_size [expr $diagram_y_size - 25] 
-	set diagram_y_start [expr $diagram_y_start - 25]
+	set diagram_y_size [expr {$diagram_y_size - 25}] 
+	set diagram_y_start [expr {$diagram_y_start - 25}]
     }
 
     set histogram_html "
-        <div style='$border position:relative;top:0px;height:[expr $diagram_y_size+20]px;width:${diagram_x_size}px;'>
+        <div style='$border position:relative;top:0px;height:[expr {$diagram_y_size+20}]px;width:${diagram_x_size}px;'>
 	<SCRIPT Language=JavaScript type='text/javascript'>
 	document.open();
 	var $diag=new Diagram();
