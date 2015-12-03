@@ -1,4 +1,4 @@
-# /packages/intranet-reporting-dashborad/tcl/intranet-reporting-dashboard-procs.tcl
+# /packages/intranet-reporting-dashboard/tcl/intranet-reporting-dashboard-procs.tcl
 #
 # Copyright (c) 2003-2007 ]project-open[
 #
@@ -693,8 +693,11 @@ ad_proc im_dashboard_histogram {
     set border ""
 
     # Calculate Name
+    set widget_name $name;
     regsub -all " " $name "_" name_subs
-    set widget_name [lang::message::lookup "" intranet-reporting-dashboard.$name_subs $name]
+    if {"" ne $name_subs} {
+	set widget_name [lang::message::lookup "" intranet-reporting-dashboard.$name_subs $name]
+    }
     set histogram_name_html "$diag.SetText(\"\",\"\", \"<B>$name</B>\");"
 
     # make the diagram a bit smaller and start a bit higher if the name is empty
