@@ -75,6 +75,8 @@ set planned_ts_value_sql "
 				p.tree_sortkey between main_p.tree_sortkey and tree_right(main_p.tree_sortkey) and
 				p.start_date is not null
 		) p
+	where	start_epoch is not null and
+		end_epoch is not null
 	order by p.tree_sortkey
 "
 # Write the results into a multirow, because we'll need it twice
@@ -84,8 +86,8 @@ db_multirow mr planned_ts_value_sql $planned_ts_value_sql
 # First pass: Collect all start and end points of project tasks
 set total_planned_ts_value 0.0
 template::multirow foreach mr {
-    if {"" ne $start_epoch} { set timeline_hash($start_epoch) 1 }
-    if {"" ne $end_epoch} { set timeline_hash($end_epoch) 1 }
+    set timeline_hash($start_epoch) 1
+    set timeline_hash($end_epoch) 1
     if {"" == $hourly_cost} {
 	ns_log Error "project-eva.json.tcl: found empty hourly_cost project project #$project_id, using default=$default_hourly_cost"
 	set message "Data loaded. Warning: Using default hourly_cost=$default_hourly_cost"
