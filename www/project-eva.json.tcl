@@ -84,8 +84,8 @@ db_multirow mr planned_ts_value_sql $planned_ts_value_sql
 # First pass: Collect all start and end points of project tasks
 set total_planned_ts_value 0.0
 template::multirow foreach mr {
-    set timeline_hash($start_epoch) 1
-    set timeline_hash($end_epoch) 1
+    if {"" ne $start_epoch} { set timeline_hash($start_epoch) 1 }
+    if {"" ne $end_epoch} { set timeline_hash($end_epoch) 1 }
     if {"" == $hourly_cost} {
 	ns_log Error "project-eva.json.tcl: found empty hourly_cost project project #$project_id, using default=$default_hourly_cost"
 	set message "Data loaded. Warning: Using default hourly_cost=$default_hourly_cost"
@@ -245,5 +245,4 @@ foreach epoch $timeline_list {
 
 set json "{\"success\": true, \"message\": \"$message\", \"data\": \[\n[join $json_lines ",\n"]\n\]}"
 doc_return 200 "text/html" $json
-
 
