@@ -32,22 +32,13 @@ ad_proc -public v {
 # Sweeper - Cleans up the dashboard cache
 # ---------------------------------------------------------------------
 
-
-ad_proc -public im_reporting_dashboard_sweeper { 
-    dummy
-} {
+ad_proc -public im_reporting_dashboard_sweeper { } {
     Deletes old dashboard DW entries
 } {
     # Delete _values_. 
     # It's not necessary to delete the cube definitions
     # (im_reporting_cubes). They also contain counters.
     db_dml del_values "delete from im_reporting_cube_values"
-}
-
-ad_proc -public im_reporting_dashboard_sweeper { } {
-    Same procedure without argument
-} {
-    im_reporting_dashboard_sweeper 0
 }
 
 
