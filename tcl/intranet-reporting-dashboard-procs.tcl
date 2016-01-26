@@ -32,6 +32,7 @@ ad_proc -public v {
 # Sweeper - Cleans up the dashboard cache
 # ---------------------------------------------------------------------
 
+
 ad_proc -public im_reporting_dashboard_sweeper { } {
     Deletes old dashboard DW entries
 } {
@@ -40,7 +41,6 @@ ad_proc -public im_reporting_dashboard_sweeper { } {
     # (im_reporting_cubes). They also contain counters.
     db_dml del_values "delete from im_reporting_cube_values"
 }
-
 
 # ----------------------------------------------------------------------
 # All Time Top Customers
@@ -210,7 +210,91 @@ ad_proc -public im_dashboard_histogram_sql {
     { -diagram_width 400 }
     { -restrict_to_object_type_id 0 }
 } {
-    Returns a dashboard component.
+    Returns a Sencha histogram with the categories and values
+    defined by a SQL statement. Example:
+    "select im_category_from_id(project_type_id), count(*) from im_projects group by project_type_id"
+    This diagram is suitable for up to 20 categories. Beyond
+    this it will probably break the GUI design and become slow.
+    In these cases please use a different widget.
+
+    @param object_id ID of a container object.
+    @param restrict_to_object_type_id Show this widget only in objects of a specific type
+} {
+    if {[im_sencha_extjs_installed_p]} {
+	return [im_dashboard_histogram_sql_sencha \
+		    -sql $sql \
+		    -object_id $object_id \
+		    -menu_label $menu_label \
+		    -name $name \
+		    -diagram_width $diagram_width \
+		    -restrict_to_object_type_id -restrict_to_object_type_id \
+		   ]
+    } else {
+	return [im_dashboard_histogram_sql_tautenhahn \
+		    -sql $sql \
+		    -object_id $object_id \
+		    -menu_label $menu_label \
+		    -name $name \
+		    -diagram_width $diagram_width \
+		    -restrict_to_object_type_id -restrict_to_object_type_id \
+		   ]
+    }
+}
+
+
+
+ad_proc -public im_dashboard_histogram_sql_sencha {
+    -sql:required
+    { -menu_label "" }
+    { -name "" }
+    { -diagram_width 400 }
+    { -object_id "" }
+    { -restrict_to_object_type_id 0 }
+} {
+    Returns a dashboard component using the Tautenhan JavaScript library.
+    Requires a SQL statement like 
+    "select im_category_from_id(project_type_id), count(*) from im_projects group by project_type_id"
+    @param object_id ID of a container object.
+    @param restrict_to_object_type_id Show this widget only in objects of a specific type
+} {
+    # Check if this portlet should only apply to a specific object sub-type
+    set object_subtype_id ""
+    if {"" != $object_id && 0 != $object_id} {
+	im_security_alert_check_integer -location "im_dashboard_histogram_sql_sencha" -value $object_id
+	set object_subtype_id [util_memoize [list db_string osubtype "select im_biz_object__get_type_id($object_id)" -default {}] 60]
+    }
+    if {"" != $object_id && 0 != $object_id && "" != $restrict_to_object_type_id && 0 != $restrict_to_object_type_id} {
+        if {$object_subtype_id != $restrict_to_object_type_id} {
+            ns_log Notice "im_dashboard_histogram_sql: Skipping portlet because object_subtype_id=$object_subtype_id != $restrict_to_object_type_id"
+            return ""
+        }
+    }
+
+    # Sencha check and permissions
+    if {![im_sencha_extjs_installed_p]} { return "" }
+    im_sencha_extjs_load_libraries
+
+    # Call the portlet page
+    set params [list \
+                    [list sql $sql] \
+		    [list diagram_title $name] \
+                    [list diagram_width $diagram_width] \
+    ]
+
+    set result [ad_parse_template -params $params "/packages/intranet-reporting-dashboard/lib/histogram-sql"]
+    return [string trim $result]
+}
+
+
+ad_proc -public im_dashboard_histogram_sql_tautenhahn {
+    -sql:required
+    { -object_id "" }
+    { -menu_label "" }
+    { -name "" }
+    { -diagram_width 400 }
+    { -restrict_to_object_type_id 0 }
+} {
+    Returns a dashboard component using the Tautenhan JavaScript library.
     Requires a SQL statement like 
     "select im_category_from_id(project_type_id), count(*) from im_projects group by project_type_id"
     @param object_id ID of a container object.
