@@ -220,7 +220,10 @@ ad_proc -public im_dashboard_histogram_sql {
     @param object_id ID of a container object.
     @param restrict_to_object_type_id Show this widget only in objects of a specific type
 } {
-    if {[im_sencha_extjs_installed_p]} {
+
+    set enable_sencha_p 0
+
+    if {$enable_sencha_p && [im_sencha_extjs_installed_p]} {
 	return [im_dashboard_histogram_sql_sencha \
 		    -sql $sql \
 		    -object_id $object_id \
