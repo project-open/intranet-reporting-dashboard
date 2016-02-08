@@ -222,7 +222,6 @@ ad_proc -public im_dashboard_histogram_sql {
 } {
 
     set enable_sencha_p 0
-
     if {$enable_sencha_p && [im_sencha_extjs_installed_p]} {
 	return [im_dashboard_histogram_sql_sencha \
 		    -sql $sql \
