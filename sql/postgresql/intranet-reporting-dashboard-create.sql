@@ -97,24 +97,24 @@ SELECT im_component_plugin__new (
 
 
 
--- All Time Top Customers
+-- All Time Top Services
 --
-SELECT im_component_plugin__new (
-	null,					-- plugin_id
-	'im_component_plugin',			-- object_type
-	now(),					-- creation_date
-	null,					-- creation_user
-	null,					-- creation_ip
-	null,					-- context_id
-	'Home All-Time Top Services',		-- plugin_name
-	'intranet-reporting-dashboard',		-- package_name
-	'left',					-- location
-	'/intranet/index',			-- page_url
-	null,					-- view_name
-	100,					-- sort_order
-	'im_dashboard_generic_component -component "generic" -left_vars "sub_project_type"',
-	'lang::message::lookup "" intranet-reporting-dashboard.All_Time_Top_Services "All-Time Top Services"'
-);
+-- SELECT im_component_plugin__new (
+-- 	null,					-- plugin_id
+-- 	'im_component_plugin',			-- object_type
+-- 	now(),					-- creation_date
+-- 	null,					-- creation_user
+-- 	null,					-- creation_ip
+-- 	null,					-- context_id
+-- 	'Home All-Time Top Services',		-- plugin_name
+-- 	'intranet-reporting-dashboard',		-- package_name
+-- 	'left',					-- location
+-- 	'/intranet/index',			-- page_url
+-- 	null,					-- view_name
+-- 	100,					-- sort_order
+-- 	'im_dashboard_generic_component -component "generic" -left_vars "sub_project_type"',
+-- 	'lang::message::lookup "" intranet-reporting-dashboard.All_Time_Top_Services "All-Time Top Services"'
+-- );
 
 
 
