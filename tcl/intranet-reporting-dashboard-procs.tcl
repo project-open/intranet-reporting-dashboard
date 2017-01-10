@@ -32,7 +32,6 @@ ad_proc -public v {
 # Sweeper - Cleans up the dashboard cache
 # ---------------------------------------------------------------------
 
-
 ad_proc -public im_reporting_dashboard_sweeper { } {
     Deletes old dashboard DW entries
 } {
@@ -210,26 +209,18 @@ ad_proc -public im_dashboard_histogram_sql {
     { -diagram_width 400 }
     { -restrict_to_object_type_id 0 }
 } {
-    Returns a Sencha histogram with the categories and values
-    defined by a SQL statement. Example:
-    "select im_category_from_id(project_type_id), count(*) from im_projects group by project_type_id"
-    This diagram is suitable for up to 20 categories. Beyond
-    this it will probably break the GUI design and become slow.
-    In these cases please use a different widget.
-
-    @param object_id ID of a container object.
-    @param restrict_to_object_type_id Show this widget only in objects of a specific type
+    If ExtJS is available returns an ExtJS BarChart, otherwise uses the Tautenhahn lib  
 } {
 
-    set enable_sencha_p 0
-    if {$enable_sencha_p && [im_sencha_extjs_installed_p]} {
+    if { [im_sencha_extjs_installed_p] } {
+	# ad_return_complaint xx $sql
 	return [im_dashboard_histogram_sql_sencha \
 		    -sql $sql \
 		    -object_id $object_id \
 		    -menu_label $menu_label \
 		    -name $name \
 		    -diagram_width $diagram_width \
-		    -restrict_to_object_type_id -restrict_to_object_type_id \
+		    -restrict_to_object_type_id $restrict_to_object_type_id \
 		   ]
     } else {
 	return [im_dashboard_histogram_sql_tautenhahn \
@@ -238,12 +229,10 @@ ad_proc -public im_dashboard_histogram_sql {
 		    -menu_label $menu_label \
 		    -name $name \
 		    -diagram_width $diagram_width \
-		    -restrict_to_object_type_id -restrict_to_object_type_id \
+		    -restrict_to_object_type_id $restrict_to_object_type_id \
 		   ]
     }
 }
-
-
 
 ad_proc -public im_dashboard_histogram_sql_sencha {
     -sql:required
@@ -253,12 +242,13 @@ ad_proc -public im_dashboard_histogram_sql_sencha {
     { -object_id "" }
     { -restrict_to_object_type_id 0 }
 } {
-    Returns a dashboard component using the Tautenhan JavaScript library.
+    Returns a dashboard component using Sencha ExtJS 
     Requires a SQL statement like 
     "select im_category_from_id(project_type_id), count(*) from im_projects group by project_type_id"
     @param object_id ID of a container object.
     @param restrict_to_object_type_id Show this widget only in objects of a specific type
 } {
+
     # Check if this portlet should only apply to a specific object sub-type
     set object_subtype_id ""
     if {"" != $object_id && 0 != $object_id} {
@@ -272,8 +262,7 @@ ad_proc -public im_dashboard_histogram_sql_sencha {
         }
     }
 
-    # Sencha check and permissions
-    if {![im_sencha_extjs_installed_p]} { return "" }
+    # Load libs
     im_sencha_extjs_load_libraries
 
     # Call the portlet page
