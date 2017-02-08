@@ -807,6 +807,7 @@ ad_proc im_dashboard_histogram {
 # 
 # ---------------------------------------------------------------
 
+
 ad_proc -public im_dashboard_top_customers {
     {-diagram_width 580}
     {-diagram_height 300}
@@ -839,9 +840,6 @@ ad_proc -public im_dashboard_top_customers {
     set result [ad_parse_template -params $params "/packages/intranet-reporting-dashboard/lib/top-customers"]
     return [string trim $result]
 }
-
-
-
 
 
 
