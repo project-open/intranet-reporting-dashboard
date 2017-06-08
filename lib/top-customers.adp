@@ -1,6 +1,5 @@
-<div id=@diagram_id@></div>
+<div id="@diagram_id@" style="height: @diagram_height@px; width: @diagram_width@px"></div>
 <script type='text/javascript'>
-
 Ext.require(['Ext.chart.*', 'Ext.Window', 'Ext.fx.target.Sprite', 'Ext.layout.container.Fit']);
 Ext.onReady(function () {
     
