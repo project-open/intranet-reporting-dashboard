@@ -25,6 +25,8 @@ Ext.onReady(function () {
             store: histogramStore@diagram_rand@,
 	    width: '@diagram_width@',
 	    height: '@diagram_height@',
+//	    width: 'auto',
+//	    height: 'auto',
             axes: [{
                 type: 'Numeric',
                 position: 'bottom',

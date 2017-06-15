@@ -17,10 +17,10 @@ set name_list_quoted    [list]
 set l10n_list           [list]
 
 # Set width/height
-if {![info exists diagram_width]} { set diagram_width 600 }
+if {![info exists diagram_width]} { set diagram_width 400 }
 if {![info exists diagram_height]} {
     set cnt [db_string sql "select count(*) from ($sql) t" -default 0]
-    set diagram_height [expr 50 + $cnt * 30]
+    set diagram_height [expr 50 + $cnt * 25]
 }
 if {$diagram_height < 100} { set diagram_height 100 }
 
