@@ -16,13 +16,12 @@ set name_list           [list]
 set name_list_quoted    [list]
 set l10n_list           [list]
 
-# Ignore width/height - try 'auto' instead  
 # Set width/height
-# if {![info exists diagram_width]} { set diagram_width 600 }
-# if {![info exists diagram_height]} {
-#    set cnt [db_string sql "select count(*) from ($sql) t" -default 0]
-#    set diagram_height [expr $cnt * 50]
-# }
+if {![info exists diagram_width]} { set diagram_width 600 }
+if {![info exists diagram_height]} {
+    set cnt [db_string sql "select count(*) from ($sql) t" -default 0]
+    set diagram_height [expr $cnt * 50]
+}
 
 # Get JSON from DB
 set sql "select

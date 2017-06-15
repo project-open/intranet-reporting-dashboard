@@ -23,8 +23,8 @@ Ext.onReady(function () {
             shadow: true,
 	    renderTo: '@diagram_id@',
             store: histogramStore@diagram_rand@,
-	    width: 'auto',
-	    height: 'auto',
+	    width: '@diagram_width@',
+	    height: '@diagram_height@',
             axes: [{
                 type: 'Numeric',
                 position: 'bottom',
