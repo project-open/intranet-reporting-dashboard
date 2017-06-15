@@ -20,8 +20,10 @@ set l10n_list           [list]
 if {![info exists diagram_width]} { set diagram_width 600 }
 if {![info exists diagram_height]} {
     set cnt [db_string sql "select count(*) from ($sql) t" -default 0]
-    set diagram_height [expr $cnt * 50]
+    set diagram_height [expr 50 + $cnt * 30]
 }
+if {$diagram_height < 100} { set diagram_height 100 }
+
 
 # Get JSON from DB
 set sql "select
