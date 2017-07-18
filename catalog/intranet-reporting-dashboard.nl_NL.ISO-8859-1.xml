@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<message_catalog package_key="intranet-reporting-dashboard" locale="nl_NL" charset="ISO-8859-1">
+
+  <msg key="All_Time_Top_Customers">All time top klanten</msg>
+  <msg key="Dashboard">Dashboard</msg>
+  <msg key="From_to">Van \&lt;br&gt;Aan</msg>
+  <msg key="Project_Queue">Project pijplijn</msg>
+  <msg key="Show_Details">Toon details</msg>
+  <msg key="Status_New_Object">Nieuw</msg>
+</message_catalog>
