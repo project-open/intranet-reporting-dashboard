@@ -3,6 +3,7 @@
 
   <msg key="All_Time">All Time</msg>
   <msg key="All_Time_Top_Customers">All Time Top Customers</msg>
+  <msg key="cnt">Cnt</msg>
   <msg key="Dashboard">Dashboard</msg>
   <msg key="From_to">From&lt;br&gt;/To</msg>
   <msg key="Indicators_Timeline">Indicators Timeline</msg>
@@ -10,7 +11,10 @@
   <msg key="Last_Quarter">Last Quarter</msg>
   <msg key="Last_Year">Last Year</msg>
   <msg key="Project_Queue">Project Queue</msg>
+  <msg key="project_status">Project Status</msg>
   <msg key="Show_Details">Show Details</msg>
+  <msg key="sort_order">Sort Order</msg>
   <msg key="Status_New_Object">&amp;lt;New&amp;gt;</msg>
   <msg key="Top_Customers">Top Customers</msg>
+  <msg key="value">Value</msg>
 </message_catalog>

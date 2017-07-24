@@ -3,13 +3,17 @@
 
   <msg key="All_Time">Gesamt</msg>
   <msg key="All_Time_Top_Customers">Beste Kunden</msg>
+  <msg key="cnt">Anzahl</msg>
   <msg key="Dashboard">Dashboard</msg>
   <msg key="From_to">Von&lt;br&gt;/Zu</msg>
   <msg key="Interval">Intervall</msg>
   <msg key="Last_Quarter">Letztes Quartal</msg>
   <msg key="Last_Year">Letztes Jahr</msg>
   <msg key="Project_Queue">Projekt Schlange</msg>
+  <msg key="project_status">Projekt Status</msg>
   <msg key="Show_Details">Zeige Details</msg>
+  <msg key="sort_order">Sortierordnung</msg>
   <msg key="Status_New_Object">&amp;lt;Neu&amp;gt;</msg>
   <msg key="Top_Customers">Top Kunden</msg>
+  <msg key="value">Wert</msg>
 </message_catalog>
