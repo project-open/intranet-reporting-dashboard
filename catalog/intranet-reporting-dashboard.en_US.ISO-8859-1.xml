@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <message_catalog package_key="intranet-reporting-dashboard" locale="en_US" charset="ISO-8859-1">
 
+  <msg key="All_Time">All Time</msg>
   <msg key="All_Time_Top_Customers">All Time Top Customers</msg>
   <msg key="Dashboard">Dashboard</msg>
   <msg key="From_to">From&lt;br&gt;/To</msg>
   <msg key="Indicators_Timeline">Indicators Timeline</msg>
+  <msg key="Interval">Interval</msg>
+  <msg key="Last_Quarter">Last Quarter</msg>
+  <msg key="Last_Year">Last Year</msg>
   <msg key="Project_Queue">Project Queue</msg>
   <msg key="Show_Details">Show Details</msg>
   <msg key="Status_New_Object">&amp;lt;New&amp;gt;</msg>
+  <msg key="Top_Customers">Top Customers</msg>
 </message_catalog>
