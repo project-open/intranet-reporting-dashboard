@@ -3,12 +3,19 @@
 
   <msg key="All_Time">Gesamt</msg>
   <msg key="All_Time_Top_Customers">Beste Kunden</msg>
+  <msg key="Axis_Title_Date">Datum</msg>
+  <msg key="Axis_Title_Invoices">Rechnungen</msg>
+  <msg key="Axis_Title_Planned_Ts_Value">Geplanter Wert Zeiterfassung</msg>
+  <msg key="Axis_Title_Quotes">Angebote</msg>
+  <msg key="Axis_Title_Timesheet_Cost">Zeiterfassung Kosten</msg>
+  <msg key="Axis_Title_Total_Planned_Ts_Value">Total geplanter Wert Zeiterfassung</msg>
   <msg key="cnt">Anzahl</msg>
   <msg key="Dashboard">Dashboard</msg>
   <msg key="From_to">Von&lt;br&gt;/Zu</msg>
   <msg key="Interval">Intervall</msg>
   <msg key="Last_Quarter">Letztes Quartal</msg>
   <msg key="Last_Year">Letztes Jahr</msg>
+  <msg key="Project_EVA">Projekt EVA</msg>
   <msg key="Project_Queue">Projekt Schlange</msg>
   <msg key="project_status">Projekt Status</msg>
   <msg key="Show_Details">Zeige Details</msg>
