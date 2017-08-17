@@ -3,6 +3,12 @@
 
   <msg key="All_Time">All Time</msg>
   <msg key="All_Time_Top_Customers">All Time Top Customers</msg>
+  <msg key="Axis_Title_Date">Date</msg>
+  <msg key="Axis_Title_Invoices">Invoices</msg>
+  <msg key="Axis_Title_Planned_Ts_Value">Planned Ts Value</msg>
+  <msg key="Axis_Title_Quotes">Quotes</msg>
+  <msg key="Axis_Title_Timesheet_Cost">Timesheet Cost</msg>
+  <msg key="Axis_Title_Total_Planned_Ts_Value">Total Planned Ts Value</msg>
   <msg key="cnt">Cnt</msg>
   <msg key="Dashboard">Dashboard</msg>
   <msg key="From_to">From&lt;br&gt;/To</msg>
@@ -10,6 +16,7 @@
   <msg key="Interval">Interval</msg>
   <msg key="Last_Quarter">Last Quarter</msg>
   <msg key="Last_Year">Last Year</msg>
+  <msg key="Project_EVA">Project EVA</msg>
   <msg key="Project_Queue">Project Queue</msg>
   <msg key="project_status">Project Status</msg>
   <msg key="Show_Details">Show Details</msg>
