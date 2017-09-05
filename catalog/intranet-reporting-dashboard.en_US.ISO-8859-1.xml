@@ -10,6 +10,7 @@
   <msg key="Axis_Title_Timesheet_Cost">Timesheet Cost</msg>
   <msg key="Axis_Title_Total_Planned_Ts_Value">Total Planned Ts Value</msg>
   <msg key="cnt">Cnt</msg>
+  <msg key="creation_user_name">Creation user name</msg>
   <msg key="Dashboard">Dashboard</msg>
   <msg key="From_to">From&lt;br&gt;/To</msg>
   <msg key="Indicators_Timeline">Indicators Timeline</msg>
@@ -19,9 +20,17 @@
   <msg key="Project_EVA">Project EVA</msg>
   <msg key="Project_Queue">Project Queue</msg>
   <msg key="project_status">Project Status</msg>
+  <msg key="Projects_by_Status">Projects by Status</msg>
+  <msg key="Sales_Pipeline">Sales Pipeline</msg>
   <msg key="Show_Details">Show Details</msg>
   <msg key="sort_order">Sort Order</msg>
   <msg key="Status_New_Object">&amp;lt;New&amp;gt;</msg>
+  <msg key="ticket_status">Ticket Status</msg>
+  <msg key="ticket_type">Ticket Type</msg>
+  <msg key="Tickets_per_Ticket_Owner">Owner</msg>
+  <msg key="Tickets_per_Ticket_Status">Status</msg>
+  <msg key="Tickets_per_Ticket_Type">Ticket type</msg>
   <msg key="Top_Customers">Top Customers</msg>
+  <msg key="Users_per_department">Users per department</msg>
   <msg key="value">Value</msg>
 </message_catalog>
