@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<message_catalog package_key="intranet-reporting-dashboard" locale="pl_PL" charset="utf-8">
+
+  <msg key="All_Time">Cała historia</msg>
+  <msg key="All_Time_Top_Customers">Cała historia kluczowych klientów</msg>
+  <msg key="Axis_Title_Date">Data</msg>
+  <msg key="Axis_Title_Invoices">Faktury</msg>
+  <msg key="Axis_Title_Planned_Ts_Value">Planowa wartość czasu pracy</msg>
+  <msg key="Axis_Title_Quotes">Wyceny</msg>
+  <msg key="Axis_Title_Timesheet_Cost">Koszty czasu pracy</msg>
+  <msg key="Axis_Title_Total_Planned_Ts_Value">Całkowita wartość planowanego czasu pracy</msg>
+  <msg key="cnt">Liczba</msg>
+  <msg key="creation_user_name">Nazwa użytkownika zgłaszającego</msg>
+  <msg key="Dashboard">Tablica rozdzielcza</msg>
+  <msg key="From_to">Od&lt;br/&gt;/To</msg>
+  <msg key="Indicators_Timeline">Wskaźniki czasowe</msg>
+  <msg key="Interval">Przedział</msg>
+  <msg key="Last_Quarter">Ostatni kwartał</msg>
+  <msg key="Last_Year">Ostatni rok</msg>
+  <msg key="Project_EVA">EVA projektu</msg>
+  <msg key="Project_Queue">Kolejka projektów</msg>
+  <msg key="project_status">Status projektu</msg>
+  <msg key="Projects_by_Status">Projekty wg statusu</msg>
+  <msg key="Sales_Pipeline">Pipeline sprzedażowy</msg>
+  <msg key="Show_Details">Pokaż szczegóły</msg>
+  <msg key="sort_order">Porządek sortowania</msg>
+  <msg key="Status_New_Object">&amp;lt;Nowy&amp;gt;</msg>
+  <msg key="ticket_status">Status zgłoszenia</msg>
+  <msg key="ticket_type">Typ zgłoszenia</msg>
+  <msg key="Tickets_per_Ticket_Owner">Właściciel</msg>
+  <msg key="Tickets_per_Ticket_Status">Status</msg>
+  <msg key="Tickets_per_Ticket_Type">Typ zgłoszenia</msg>
+  <msg key="Top_Customers">Główni klienci</msg>
+  <msg key="Users_per_department">Użytkownicy wg działów</msg>
+  <msg key="value">Wartość</msg>
+</message_catalog>
