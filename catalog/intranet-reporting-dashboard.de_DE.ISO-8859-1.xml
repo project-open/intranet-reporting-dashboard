@@ -16,11 +16,11 @@
   <msg key="Last_Quarter">Letztes Quartal</msg>
   <msg key="Last_Year">Letztes Jahr</msg>
   <msg key="Project_EVA">Projekt EVA</msg>
-  <msg key="Project_Queue">Projekt Schlange</msg>
-  <msg key="project_status">Projekt Status</msg>
+  <msg key="Project_Queue">Projekt-Warteschlange</msg>
+  <msg key="project_status">Projektstatus</msg>
   <msg key="Show_Details">Zeige Details</msg>
   <msg key="sort_order">Sortierordnung</msg>
   <msg key="Status_New_Object">&amp;lt;Neu&amp;gt;</msg>
-  <msg key="Top_Customers">Top Kunden</msg>
+  <msg key="Top_Customers">Top-Kunden</msg>
   <msg key="value">Wert</msg>
 </message_catalog>
