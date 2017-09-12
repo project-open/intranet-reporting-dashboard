@@ -37,7 +37,9 @@ set store_json [db_string get_json_for_histogram $sql -default ""]
 foreach {x y} [lindex [json::json2dict $store_json] 0] {
     lappend name_list $x
     lappend name_list_quoted "'$x'"
-    lappend l10n_list [lang::message::lookup "" intranet-reporting-dashboard.$x "$x"]
+
+    # Not used - has issues with l10n
+    # lappend l10n_list [lang::message::lookup "" intranet-reporting-dashboard.$x "$x"]
 }
 
 set fields [join $name_list_quoted ", "]
