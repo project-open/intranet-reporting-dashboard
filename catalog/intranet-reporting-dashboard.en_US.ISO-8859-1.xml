@@ -21,6 +21,7 @@
   <msg key="Project_Queue">Project Queue</msg>
   <msg key="project_status">Project Status</msg>
   <msg key="Projects_by_Status">Projects by Status</msg>
+  <msg key="round">round</msg>
   <msg key="Sales_Pipeline">Sales Pipeline</msg>
   <msg key="Show_Details">Show Details</msg>
   <msg key="sort_order">Sort Order</msg>
