@@ -317,11 +317,12 @@ SELECT im_component_plugin__new (
 	'/intranet/projects/index',		-- page_url
 	null,					-- view_name
 	100,					-- sort_order
-	'im_dashboard_histogram_sql -diagram_width 200 -sql "
-		select	im_category_from_id(p.project_status_id) as project_status,
+	'im_dashboard_histogram_sql -diagram_width 400 -sql "
+		select	im_lang_lookup_category(''[ad_conn locale]'', p.project_status_id) as project_status,
 		        count(*) as cnt
 		from	im_projects p
-		where	p.project_status_id not in (select * from im_sub_categories(81))
+		where	p.parent_id is null and
+			p.project_status_id not in (select * from im_sub_categories(81))
 		group by project_status_id
 		order by project_status
 	"',
@@ -342,11 +343,12 @@ SELECT im_component_plugin__new (
 	'/intranet/projects/index',		-- page_url
 	null,					-- view_name
 	100,					-- sort_order
-	'im_dashboard_histogram_sql -diagram_width 600 -sql "
+	'im_dashboard_histogram_sql -diagram_width 400 -sql "
 		select	im_lang_lookup_category(''[ad_conn locale]'', p.project_status_id) as project_status,
 		        sum(coalesce(presales_probability,project_budget,0) * coalesce(presales_value,0)) as value
 		from	im_projects p
-		where	p.project_status_id not in (select * from im_sub_categories(81))
+		where	p.parent_id is null and
+			p.project_status_id not in (select * from im_sub_categories(81))
 		group by project_status_id
 		order by project_status
 	"',
