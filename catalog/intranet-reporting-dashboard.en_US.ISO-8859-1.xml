@@ -11,12 +11,14 @@
   <msg key="Axis_Title_Total_Planned_Ts_Value">Total Planned Ts Value</msg>
   <msg key="cnt">Cnt</msg>
   <msg key="creation_user_name">Creation user name</msg>
+  <msg key="Daily_Ticket_Status_Change">Status Changes Tickets</msg>
   <msg key="Dashboard">Dashboard</msg>
   <msg key="From_to">From&lt;br&gt;/To</msg>
   <msg key="Indicators_Timeline">Indicators Timeline</msg>
   <msg key="Interval">Interval</msg>
   <msg key="Last_Quarter">Last Quarter</msg>
   <msg key="Last_Year">Last Year</msg>
+  <msg key="Monthly_Project_Status_Changes">30 Day Status Changes</msg>
   <msg key="Project_EVA">Project EVA</msg>
   <msg key="Project_Queue">Project Queue</msg>
   <msg key="project_status">Project Status</msg>

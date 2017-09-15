@@ -380,6 +380,7 @@ ad_proc -public im_dashboard_active_projects_status_histogram {
 } {
     set menu_label "reporting-cubes-finance"
     set current_user_id [auth::require_login]
+    set locale [ad_conn locale]
     set read_p [db_string report_perms "
         select  im_object_permission_p(m.menu_id, :current_user_id, 'read')
         from    im_menus m where m.label = :menu_label
@@ -387,24 +388,19 @@ ad_proc -public im_dashboard_active_projects_status_histogram {
     if {"t" ne $read_p } { return "" }
 
     set sql "
-        select
-		count(*) as cnt,
+        select	count(*) as cnt,
 		project_status_id,
-                im_category_from_id(project_status_id) as project_status
-        from
-		im_projects p
-	where
-		p.parent_id is null
+                im_lang_lookup_category(:locale, project_status_id) as project_status
+        from	im_projects p
+	where	p.parent_id is null
 		and p.project_status_id not in (
 			[im_project_status_deleted],
 			[im_project_status_canceled],
 			[im_project_status_invoiced],
 			[im_project_status_closed]
 		)
-        group by 
-		project_status_id
-	order by
-		project_status_id
+        group by project_status_id
+	order by project_status_id
     "
     set values [list]
     db_foreach project_queue $sql {

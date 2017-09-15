@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <message_catalog package_key="intranet-reporting-dashboard" locale="de_DE" charset="ISO-8859-1">
 
-  <msg key="All_Time">Gesamt</msg>
+  <msg key="All_Time">Ohne Zeitbeschränkung</msg>
   <msg key="All_Time_Top_Customers">Beste Kunden</msg>
   <msg key="Axis_Title_Date">Datum</msg>
   <msg key="Axis_Title_Invoices">Rechnungen</msg>
@@ -11,26 +11,28 @@
   <msg key="Axis_Title_Total_Planned_Ts_Value">Total geplanter Wert Zeiterfassung</msg>
   <msg key="cnt">Anzahl</msg>
   <msg key="creation_user_name">Besitzer Name</msg>
+  <msg key="Daily_Ticket_Status_Change">Statuswechsel seit 24h</msg>
   <msg key="Dashboard">Dashboard</msg>
   <msg key="From_to">Von&lt;br&gt;/Zu</msg>
   <msg key="Indicators_Timeline">Zeitleiste Indikatoren</msg>
   <msg key="Interval">Intervall</msg>
   <msg key="Last_Quarter">Letztes Quartal</msg>
   <msg key="Last_Year">Letztes Jahr</msg>
-  <msg key="Project_EVA">Projekt EVA</msg>
+  <msg key="Monthly_Project_Status_Changes">30 Tage Statusänderungen</msg>
+  <msg key="Project_EVA">Projekt-EVA</msg>
   <msg key="Project_Queue">Projekt-Warteschlange</msg>
   <msg key="project_status">Projektstatus</msg>
-  <msg key="Projects_by_Status">Projekte nach Status</msg>
+  <msg key="Projects_by_Status">Projektzahl nach Status</msg>
   <msg key="round">rund</msg>
-  <msg key="Sales_Pipeline">Verkaufstrichter</msg>
+  <msg key="Sales_Pipeline">Verkaufschancen - Volumen nach Status</msg>
   <msg key="Show_Details">Zeige Details</msg>
   <msg key="sort_order">Sortierordnung</msg>
   <msg key="Status_New_Object">&amp;lt;Neu&amp;gt;</msg>
-  <msg key="ticket_status">Ticket Status</msg>
-  <msg key="ticket_type">Ticket Typ</msg>
+  <msg key="ticket_status">Ticket-Status</msg>
+  <msg key="ticket_type">Ticket-Typ</msg>
   <msg key="Tickets_per_Ticket_Owner">Besitzer</msg>
   <msg key="Tickets_per_Ticket_Status">Status</msg>
-  <msg key="Tickets_per_Ticket_Type">Ticket Typ</msg>
+  <msg key="Tickets_per_Ticket_Type">Ticket-Typ</msg>
   <msg key="Top_Customers">Top-Kunden</msg>
   <msg key="Users_per_department">Benutzer pro Abteilung</msg>
   <msg key="value">Wert</msg>
