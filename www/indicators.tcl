@@ -41,7 +41,7 @@ from
 	im_costs_aggreg ica
 where
 	-- only customer invoices
-	ica.cost_type_id = 3700
+	ica.cost_type_id in ([join [im_sub_categories [im_cost_type_invoice]] ","])
 	-- not in paid, deleted, filed
 	and ica.cost_status_id not in (3810, 3812, 3814)
 "]
@@ -53,7 +53,7 @@ from
 	im_costs_aggreg ica
 where
 	-- only customer invoices
-	ica.cost_type_id = 3704
+	ica.cost_type_id ([join [im_sub_categories [im_cost_type_bill]] ","])
 	-- not in paid, deleted, filed
 	and ica.cost_status_id not in (3810, 3812, 3814)
 "]
@@ -78,7 +78,7 @@ from
 		-- take only last X days
 		and ica.due_date > to_date(to_char(now(), 'YYYY-MM-DD'), 'YYYY-MM-DD') -90
 		-- provider bills
-		and ica.cost_type_id = 3700
+		and ica.cost_type_id in ([join [im_sub_categories [im_cost_type_invoice]] ","])
 		-- only source-words
 		and iii.item_uom_id = 324
 	) i
@@ -104,7 +104,7 @@ from
 		-- take only last X days
 		and ica.due_date > to_date(to_char(now(), 'YYYY-MM-DD'), 'YYYY-MM-DD') -90
 		-- provider bills
-		and ica.cost_type_id = 3704
+		and ica.cost_type_id in ([join [im_sub_categories [im_cost_type_bill]] ","])
 		-- only source-words
 		and iii.item_uom_id = 324
 	) i

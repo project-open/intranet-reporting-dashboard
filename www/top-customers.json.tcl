@@ -50,7 +50,7 @@ set top_customers_sql "
 	from	im_companies cust,
 		im_costs c
 	where	c.customer_id = cust.company_id and
-		c.cost_type_id = [im_cost_type_invoice] and
+		c.cost_type_id in ([join [im_sub_categories [im_cost_type_invoice]] ","]) and
 		cust.company_path != 'internal'
 		$top_customer_interval_sql
 	group by company_name
