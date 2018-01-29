@@ -573,6 +573,8 @@ ad_proc im_dashboard_pie_chart {
 	-values {{Abc 10} {Bcde 20} {Cdefg 30} {Defg 25}}
 	</pre>		       
 } {
+    template::head::add_javascript -src "/resources/diagram/diagram/diagram.js" -order "40" 
+
     if {"" == $font_color} { set font_color [im_dashboard_color -type "pie_text_color"] }
     if {[llength $values] < $max_entries} { set max_entries [llength $values] }
 
@@ -691,6 +693,8 @@ ad_proc im_dashboard_histogram {
         -values {{Potential 10} {Quoting 5} {Open 5} {Invoicing 6}} \
 	]</pre>
 } {
+    template::head::add_javascript -src "/resources/diagram/diagram/diagram.js" -order "40" 
+
     if {"" == $bar_color} { set bar_color [im_dashboard_color -type bar_color] }
     if {"" == $bar_text_color} { set bar_text_color [im_dashboard_color -type bar_text_color] }
     if {"" == $bar_bg_color} { set bar_bg_color [im_dashboard_color -type bar_bg_color] }
