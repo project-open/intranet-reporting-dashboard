@@ -21,7 +21,7 @@ Ext.onReady(function () {
 
     revenueByDeptsChart = new Ext.chart.Chart({
         xtype: 'chart',
-        animate: true,
+        animate: false,
         store: revenueByDeptsStore,
         legend: { position: 'right' },
         insetPadding: 20,
@@ -31,7 +31,7 @@ Ext.onReady(function () {
             type: 'Numeric',
             position: 'left',
             fields: @dept_list_json;noquote@,
-            title: 'Revenue (in 1000 USD)'
+            title: 'Revenue (x 1000 @default_currency@)'
         }, {
             type: 'Time',
             position: 'bottom',

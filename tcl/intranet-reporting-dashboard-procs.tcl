@@ -872,3 +872,35 @@ ad_proc -public im_dashboard_project_eva {
     return [string trim $result]
 }
 
+
+
+
+# ---------------------------------------------------------------
+#  Revenues by department
+# ---------------------------------------------------------------
+
+ad_proc -public im_dashboard_revenue_by_dept {
+    {-diagram_width 600}
+    {-diagram_height 500}
+} {
+    Returns a HTML component with a timeline of a revenues
+    by department.
+} {
+    # Sencha check and permissions
+    if {![im_sencha_extjs_installed_p]} { return "" }
+    set current_user_id [ad_conn user_id]
+    if {![im_permission $current_user_id view_finance]} { return "You don't have the right to see financial data" }
+    im_sencha_extjs_load_libraries
+
+    # Call the portlet page
+    set params [list \
+                    [list diagram_width $diagram_width] \
+                    [list diagram_height $diagram_height] \
+    ]
+
+    set result [ad_parse_template -params $params "/packages/intranet-reporting-dashboard/lib/revenue-by-dept"]
+    return [string trim $result]
+}
+
+
+

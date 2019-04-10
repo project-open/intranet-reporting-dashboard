@@ -15,6 +15,13 @@ if {![info exists diagram_width]} { set diagram_width 600 }
 if {![info exists diagram_height]} { set diagram_height 500 }
 if {![info exists diagram_title]} { set diagram_title [lang::message::lookup "" intranet-reporting-dashboard.Revenue_by_Department "Revenue by Department"] }
 
+
+# Main classifier
+# set dept_sql "coalesce(acs_object__name(project_cost_center_id), 'none')"
+# set dept_sql "coalesce(im_category_from_id(aec_area_id), 'none')"
+#set dept_sql "coalesce((select category from im_categories where category_id = aec_area_id), 'none')"
+set dept_sql "coalesce((select cost_center_name from im_cost_centers where cost_center_id = project_cost_center_id), 'none')"
+
 # ----------------------------------------------------
 # Diagram Setup
 # ----------------------------------------------------
@@ -38,6 +45,51 @@ set invoice_finished_period 30
 #   should have to invoices, so "revenue" should be zero.
 # ----------------------------------------------------
 
+set middle_sql "
+	select	main_p.project_id,
+		'<a href=/intranet/projects/view?project_id='||main_p.project_id||'>'||
+		main_p.project_name || '</a>' as name,
+		main_p.start_date, 
+		main_p.end_date,
+		main_p.department,
+		revenue * now_percent / 100.0 / 1000.0 as now_revenue,
+		external_cost * now_percent / 100.0 / 1000.0 as now_external_cost,
+		internal_cost * now_percent / 100.0 / 1000.0 as now_internal_cost,
+		(revenue * now_percent - external_cost * now_percent - internal_cost * now_percent) / 100.0 / 1000.0 as now_profit
+	from
+		(select	*,
+			round(CASE
+				WHEN (:now::date - end_date) > 0 THEN 100.0			-- project finished
+				WHEN (:now::date - start_date) < 0 THEN 0.0			-- not yet started
+				ELSE 100.0 * (:now::date - start_date) / (greatest(1, end_date -  start_date))	-- in course
+			END,2) as now_percent
+		from	(
+				select	project_id,
+					project_name,
+					$dept_sql as department,
+					start_date::date as start_date,
+					greatest(end_date::date, start_date::date + (cost_invoices_cache/5000)::integer) as end_date,
+					project_status_id,
+					cost_invoices_cache as revenue,
+					cost_bills_cache as external_cost,
+					cost_timesheet_logged_cache + cost_expense_logged_cache as internal_cost
+				from	im_projects
+				where	parent_id is null and
+					end_date >= :first_project_start::date
+			) p
+		where	1=1
+		) main_p
+	where
+		1 = 1
+	-- order by profit ASC
+	-- order by revenue * now_percent - external_cost * now_percent - internal_cost * now_percent
+
+"
+
+# set first_project_start [db_string now "select now()::date - 365"]
+# set now [db_string now "select now()::date"]
+# ad_return_complaint 1 [im_ad_hoc_query -format html "$middle_sql"]
+
 set revenue_sql "
 select
 	department,
@@ -46,67 +98,14 @@ select
 	sum(now_internal_cost) as internal_cost,
 	sum(now_profit) as profit
 from
-	(select
-		main_p.project_id,
-		main_p.department,
-		-- main_p.project_name,
-		-- main_p.start_date,
-		-- main_p.end_date,
-		CASE WHEN status_id in (71, 72, 73, 74, 75, 77, 82, 83, 10000408) THEN 0.0 
-		ELSE round(revenue * now_percent / 100000.0) END as now_revenue,
-		round(external_cost * now_percent / 100000.0) as now_external_cost,
-		round(internal_cost * now_percent / 100000.0) as now_internal_cost,
-		CASE WHEN status_id in (77, 82, 83, 10000408) THEN 0.0 ELSE round(revenue * now_percent / 100000.0) END
-		- round(external_cost * now_percent / 100000.0) - round(internal_cost * now_percent / 100000.0) as now_profit
-	from
-		(select
-			main_p.project_id as project_id,
-			main_p.project_name as project_name,
-			coalesce(im_category_from_id(aec_area_id), 'none') as department,
-			main_p.start_date::date as start_date,
-			main_p.end_date::date as end_date,
-			main_p.project_status_id as status_id,
-		
-			round(CASE
-				WHEN (:now::date - main_p.end_date::date) > 0 THEN 100.0		-- project finished
-				WHEN (:now::date - main_p.start_date::date) < 0 THEN 0.0		-- not yet started
-				ELSE 100.0 * (:now::date - main_p.start_date::date) / 
-				     (greatest(1, main_p.end_date::date -  main_p.start_date::date))	-- in course
-			END,2) as now_percent,
-	
-			main_p.project_budget as budget,
-	
-			-- Revenue - 30 days after project end all invoices have been written.
-			-- Before that we assume that the quoted amount will be invoiced later.
-			CASE WHEN :now::date - main_p.end_date::date > :invoice_finished_period 
-			THEN greatest(main_p.cost_invoices_cache, main_p.project_budget)
-			ELSE greatest(main_p.cost_invoices_cache, main_p.cost_quotes_cache, main_p.project_budget)
-			END as revenue,
-	
-			-- External costs - 30 days after project end all provider bills have been written.
-			-- Before we assume that all Purchase Orders will convert to bills.
-			CASE WHEN :now::date - main_p.end_date::date > :invoice_finished_period
-			THEN main_p.cost_purchase_orders_cache
-			ELSE greatest(main_p.cost_purchase_orders_cache, main_p.cost_bills_cache)
-			END as external_cost,
-	
-			main_p.cost_timesheet_logged_cache + main_p.cost_expense_logged_cache as internal_cost
-	
-		from	im_projects main_p
-		where	main_p.parent_id is null and
-			main_p.end_date >= :first_project_start::date
-		) main_p
-	where
-		revenue > 0.0
-
-	) t
+	($middle_sql) t
 group by department
 order by department
 "
 
 
 # Get the list of all departments
-set dept_list [db_list dept_list "select distinct im_category_from_id(aec_area_id) from im_projects order by im_category_from_id(aec_area_id)"]
+set dept_list [db_list dept_list "select dept from (select distinct $dept_sql as dept from im_projects) t order by lower(dept)"]
 set dept_list_json "\['[join $dept_list "', '"]'\]"
 
 
@@ -167,7 +166,7 @@ foreach now $months {
 
 	set rev_hash_old($dept) $value; # update the old value for next iteration
 
-	set diff [expr $value - $old_value]
+	set diff [expr round(1000.0 * ($value - $old_value)) / 1000.0]
 	lappend rev_line "'$dept': $diff"
 
     }
