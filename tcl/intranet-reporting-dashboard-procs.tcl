@@ -882,6 +882,11 @@ ad_proc -public im_dashboard_project_eva {
 ad_proc -public im_dashboard_revenue_by_dept {
     {-diagram_width 600}
     {-diagram_height 500}
+    {-diagram_title ""}
+    {-diagram_dept_sql ""}
+    {-diagram_default_interval "last_year" }
+    {-diagram_default_fact "revenue" }
+    {-diagram_min_start_date "2015-01-01" }
 } {
     Returns a HTML component with a timeline of a revenues
     by department.
@@ -896,6 +901,11 @@ ad_proc -public im_dashboard_revenue_by_dept {
     set params [list \
                     [list diagram_width $diagram_width] \
                     [list diagram_height $diagram_height] \
+                    [list diagram_title $diagram_title] \
+                    [list diagram_dept_sql $diagram_dept_sql] \
+                    [list diagram_default_interval $diagram_default_interval] \
+                    [list diagram_default_fact $diagram_default_fact] \
+                    [list diagram_min_start_date $diagram_min_start_date] \
     ]
 
     set result [ad_parse_template -params $params "/packages/intranet-reporting-dashboard/lib/revenue-by-dept"]

@@ -146,30 +146,30 @@ set months [db_list months "select * from im_month_enumerator(:diagram_start_dat
 # ----------------------------------------------------
 
 
-foreach dept $dept_list { set rev_hash_old($dept) 0.0 }
+foreach dept $dept_list { set hash_old($dept-revenue) 0.0 }
 set rev_rows {}
 set cnt 0
 foreach now $months {
 
     set rev_line [list "'Date': new Date(\"$now\")"]
-    array unset rev_hash
+    array unset hash
 
     db_foreach rev $revenue_sql {
-        set rev_hash($department) $revenue
-        set int_cost_hash($department) $internal_cost
-        set ext_cost_hash($department) $external_cost
-        set profit_hash($department) $profit
+        set hash($department-revenue) $revenue
+        set hash($department-internal_cost) $internal_cost
+        set hash($department-external_cost) $external_cost
+        set hash($department-profit) $profit
     }
 
     # Extract a list of revenues by dept, following the list of depts
     foreach dept $dept_list {
 	set value 0.0; # current value
-	if {[info exists rev_hash($dept)]} { set value $rev_hash($dept) }
+	if {[info exists hash($dept-$diagram_fact)]} { set value $hash($dept-$diagram_fact) }
 
 	set old_value 0.0; # value from last month
-	if {[info exists rev_hash_old($dept)]} { set old_value $rev_hash_old($dept) }
+	if {[info exists hash_old($dept-$diagram_fact)]} { set old_value $hash_old($dept-$diagram_fact) }
 
-	set rev_hash_old($dept) $value; # update the old value for next iteration
+	set hash_old($dept-$diagram_fact) $value; # update the old value for next iteration
 
 	set diff [expr round(1000.0 * ($value - $old_value)) / 1000.0]
 	lappend rev_line "'$dept': $diff"
