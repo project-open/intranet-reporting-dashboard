@@ -2,18 +2,27 @@
 <script type='text/javascript'>
 Ext.require(['Ext.chart.*', 'Ext.Window', 'Ext.fx.target.Sprite', 'Ext.layout.container.Fit']);
 Ext.onReady(function () {
-    
+
     revenueByDeptsStore = Ext.create('Ext.data.Store', {
         fields: @header_json;noquote@,
-        data: [
-@data;noquote@
-        ]
+	autoLoad: true,
+	proxy: {
+            type: 'rest',
+            url: '/intranet-reporting-dashboard/revenue-by-dept.json',
+            extraParams: {					// Parameters to the data-source
+		diagram_interval: 'last_year',			// 
+		diagram_fact: 'revenue', 			// 
+		diagram_dept_sql: "@diagram_dept_sql;noquote@"	// 
+            },
+            reader: { type: 'json', root: 'data' }
+	}
     });
 
     var revenueByDeptsIntervalStore = Ext.create('Ext.data.Store', {
         fields: ['display', 'value'],
         data: [
-            {"display":"<%=[lang::message::lookup "" intranet-reporting-dashboard.All_Time "All time"]%>", "value":"all_time"},
+            {"display":"<%=[lang::message::lookup "" intranet-reporting-dashboard.All_Time "All Time"]%>", "value":"all_time"},
+            {"display":"<%=[lang::message::lookup "" intranet-reporting-dashboard.Last_Two_Years "Last Two Year"]%>", "value":"last_two_years"},
             {"display":"<%=[lang::message::lookup "" intranet-reporting-dashboard.Last_Year "Last Year"]%>", "value":"last_year"},
             {"display":"<%=[lang::message::lookup "" intranet-reporting-dashboard.Last_Quarter "Last Quarter"]%>", "value":"last_quarter"}
         ]
@@ -26,7 +35,6 @@ Ext.onReady(function () {
         legend: { position: 'right' },
         insetPadding: 20,
         theme: 'Base:gradients',
-
         axes: [{
             type: 'Numeric',
             position: 'left',
@@ -39,8 +47,6 @@ Ext.onReady(function () {
             dateFormat: 'j M y',
             constraint: false,
             step: [Ext.Date.MONTH, 1],
-            // fromDate: new Date('2019-01-01'),
-            // toDate: new Date('2019-06-01'),
             label: {rotate: {degrees: 315}}
         }],
         series: @series_list_json;noquote@
@@ -65,7 +71,7 @@ Ext.onReady(function () {
                 triggerAction: 'all',
                 width: 150,
                 forceSelection: true,
-                value: 'all_time',
+                value: 'last_year',
                 listeners:{select:{fn:function(combo, comboValues) {
                     var value = comboValues[0].data.value;
                     var extraParams = revenueByDeptsStore.getProxy().extraParams;
