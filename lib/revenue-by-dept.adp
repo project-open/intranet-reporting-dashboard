@@ -31,47 +31,19 @@ Ext.onReady(function () {
             type: 'Numeric',
             position: 'left',
             fields: @dept_list_json;noquote@,
-            title: 'Revenue'
+            title: 'Revenue (in 1000 USD)'
         }, {
             type: 'Time',
             position: 'bottom',
-            fields: 'Date',
-            dateFormat: 'j m y',
+            fields: ['Date'],
+            dateFormat: 'j M y',
             constraint: false,
-            step: [Ext.Date.DAY, 1],
+            step: [Ext.Date.MONTH, 1],
             // fromDate: new Date('2019-01-01'),
             // toDate: new Date('2019-06-01'),
             label: {rotate: {degrees: 315}}
         }],
         series: @series_list_json;noquote@
-/*
-	[
-	    {
-		type: 'line',
-		title: 'ARC',
-		highlight: { size: 7, radius: 7 },
-		axis: 'left',
-		xField: 'Date',
-		yField: 'ARC'
-            }, 
-	    {
-		type: 'line',
-		title: 'CON',
-		highlight: { size: 7, radius: 7 },
-		axis: 'left',
-		xField: 'Date',
-		yField: 'CON'
-            }, 
-	    {
-		type: 'line',
-		title: 'RB',
-		highlight: { size: 7, radius: 7 },
-		axis: 'left',
-		xField: 'Date',
-		yField: 'RB'
-            }
-	]
-*/
     });
 
     var revenueByDeptsPanel = Ext.create('widget.panel', {

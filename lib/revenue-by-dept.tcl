@@ -24,7 +24,7 @@ set diagram_rand [expr {round(rand() * 100000000.0)}]
 set diagram_id "revenu_by_dept_$diagram_rand"
 set default_currency [im_parameter -package_id [im_package_cost_id] "DefaultCurrency" "" "EUR"]
 
-
+set invoice_finished_period 30
 
 # ----------------------------------------------------
 # Revenues by department
@@ -52,16 +52,17 @@ from
 		-- main_p.project_name,
 		-- main_p.start_date,
 		-- main_p.end_date,
-		CASE WHEN status_id in (77, 82, 83, 10000408) THEN 0.0 ELSE round(revenue * now_percent / 100.0) END as now_revenue,
-		round(external_cost * now_percent / 100.0) as now_external_cost,
-		round(internal_cost * now_percent / 100.0) as now_internal_cost,
-		CASE WHEN status_id in (77, 82, 83, 10000408) THEN 0.0 ELSE round(revenue * now_percent / 100.0) END
-		- round(external_cost * now_percent / 100.0) - round(internal_cost * now_percent / 100.0) as now_profit
+		CASE WHEN status_id in (71, 72, 73, 74, 75, 77, 82, 83, 10000408) THEN 0.0 
+		ELSE round(revenue * now_percent / 100000.0) END as now_revenue,
+		round(external_cost * now_percent / 100000.0) as now_external_cost,
+		round(internal_cost * now_percent / 100000.0) as now_internal_cost,
+		CASE WHEN status_id in (77, 82, 83, 10000408) THEN 0.0 ELSE round(revenue * now_percent / 100000.0) END
+		- round(external_cost * now_percent / 100000.0) - round(internal_cost * now_percent / 100000.0) as now_profit
 	from
 		(select
 			main_p.project_id as project_id,
 			main_p.project_name as project_name,
-			im_category_from_id(aec_area_id) as department,
+			coalesce(im_category_from_id(aec_area_id), 'none') as department,
 			main_p.start_date::date as start_date,
 			main_p.end_date::date as end_date,
 			main_p.project_status_id as status_id,
@@ -77,14 +78,14 @@ from
 	
 			-- Revenue - 30 days after project end all invoices have been written.
 			-- Before that we assume that the quoted amount will be invoiced later.
-			CASE WHEN :now::date - main_p.end_date::date > 30 
+			CASE WHEN :now::date - main_p.end_date::date > :invoice_finished_period 
 			THEN greatest(main_p.cost_invoices_cache, main_p.project_budget)
 			ELSE greatest(main_p.cost_invoices_cache, main_p.cost_quotes_cache, main_p.project_budget)
 			END as revenue,
 	
 			-- External costs - 30 days after project end all provider bills have been written.
 			-- Before we assume that all Purchase Orders will convert to bills.
-			CASE WHEN :now::date - main_p.end_date::date > 30
+			CASE WHEN :now::date - main_p.end_date::date > :invoice_finished_period
 			THEN main_p.cost_purchase_orders_cache
 			ELSE greatest(main_p.cost_purchase_orders_cache, main_p.cost_bills_cache)
 			END as external_cost,
@@ -111,19 +112,37 @@ set dept_list_json "\['[join $dept_list "', '"]'\]"
 
 set series_list {}
 foreach dept $dept_list {
-    lappend series_list "{type: 'line', title: '$dept', xField: 'Date', yField: '$dept', axis: 'left', highlight: {size: 7, radius: 7}}"
+    lappend series_list "{
+                type: 'line',
+                title: '$dept', 
+                xField: 'Date', yField: '$dept', 
+                axis: 'left', 
+                highlight: {size: 7, radius: 7},
+                tips: { width: 200, renderer: function(storeItem, item) { 
+                    this.setTitle('$dept:<br>Date: '+storeItem.get('Date').toISOString().substring(0,10)+',<br> Revenues: '+storeItem.get('$dept')); 
+                }}
+            }"
 }
-set series_list_json "\[\n\t\t[join $series_list ",\n\t\t"]\n\t\]"
+set series_list_json "\[\n            [join $series_list ",\n            "]\n        \]"
 
 
 
 # Get the month dimension
-set first_project_start [db_string first_project "select greatest(min(start_date), now()::date - 750) from im_projects" -default "2010-01-01"]
-set first_project_start "2018-01-01"
+set first_project_start [db_string first_project "select greatest(min(start_date), now()::date - 365*2) from im_projects" -default "2010-01-01"]
 set months [db_list months "select * from im_month_enumerator(:first_project_start::date, now()::date)"]
 
+# The header of the Sencha store:
 set header_list [linsert $dept_list 0 "Date"]
 set header_json "\['[join $header_list "', '"]'\]"
+
+
+# ----------------------------------------------------
+# Start looping
+# ----------------------------------------------------
+
+
+foreach dept $dept_list { set rev_hash_old($dept) 0.0 }
+
 
 set rev_rows {}
 foreach now $months {
@@ -140,9 +159,17 @@ foreach now $months {
 
     # Extract a list of revenues by dept, following the list of depts
     foreach dept $dept_list {
-	set value 0.0
+	set value 0.0; # current value
 	if {[info exists rev_hash($dept)]} { set value $rev_hash($dept) }
-	lappend rev_line "'$dept': $value"
+
+	set old_value 0.0; # value from last month
+	if {[info exists rev_hash_old($dept)]} { set old_value $rev_hash_old($dept) }
+
+	set rev_hash_old($dept) $value; # update the old value for next iteration
+
+	set diff [expr $value - $old_value]
+	lappend rev_line "'$dept': $diff"
+
     }
 
     lappend rev_rows "\{[join $rev_line ", "]\}"
