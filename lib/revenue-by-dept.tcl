@@ -64,9 +64,26 @@ foreach dept $dept_list {
                 xField: 'Date', yField: '$dept', 
                 axis: 'left', 
                 highlight: {size: 7, radius: 7},
+		listeners: {
+		    'itemclick': function(item, event) {
+		        var date = item.value\[0\].toISOString().substring(0,10);
+			var value = item.value\[1\];
+			var dept = item.series.yField;
+			var url = '/intranet-reporting-dashboard/revenue-by-dept-details';
+			url = url + '?date='+date;
+			url = url +'&dept='+dept +'&dept_sql=[im_quotejson $diagram_dept_sql]';
+			window.open(url, '_blank');
+		    }	   
+		},
                 tips: { width: 200, renderer: function(storeItem, item) { 
                     this.setTitle('$dept:<br>Date: '+storeItem.get('Date').toISOString().substring(0,10)+',<br> Revenues: '+storeItem.get('$dept')); 
                 }}
             }"
 }
 set series_list_json "\[\n            [join $series_list ",\n            "]\n        \]"
+
+
+# Show Axis only until 1st of current month.
+# Everything within the current month is vague,
+# because invoices are probably not yet written...
+set axis_to_date [db_string to_date "select to_char(now(), 'YYYY-MM-01')"]

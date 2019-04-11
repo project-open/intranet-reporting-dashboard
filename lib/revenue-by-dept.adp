@@ -57,6 +57,8 @@ Ext.onReady(function () {
             dateFormat: 'j M y',
             constraint: false,
             step: [Ext.Date.MONTH, 1],
+            // fromDate: new Date('2019-01-01'),
+            toDate: new Date('@axis_to_date@'),
             label: {rotate: {degrees: 315}}
         }],
         series: @series_list_json;noquote@
