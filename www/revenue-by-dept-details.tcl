@@ -158,6 +158,7 @@ set report_sql "
 				from	im_projects
 				where	parent_id is null and
 					start_date is not null and
+					project_status_id not in ([im_project_status_deleted]) and
 					end_date >= :prev::date and
 					start_date < :date::date
 			) p
