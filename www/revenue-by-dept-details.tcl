@@ -128,7 +128,10 @@ set report_sql "
 		round(revenue * prev_percent / 100.0, 2) as prev_revenue,
 		round(external_cost * prev_percent / 100.0, 2)  as prev_external_cost,
 		round(internal_cost * prev_percent / 100.0, 2)  as prev_internal_cost,
-		round(profit * prev_percent / 100.0, 2) as prev_profit
+		round(profit * prev_percent / 100.0, 2) as prev_profit,
+
+		round(revenue / 100.0 * (date_percent - prev_percent), 2) as revenue_in_interval,
+		round(profit / 100.0 * (date_percent - prev_percent), 2) as profit_in_interval
 
 	from
 		(select	*,
@@ -211,11 +214,11 @@ set header_vars {
 
 	"#align=right [im_report_format_number $prev_revenue $output_format $number_locale]"
 	"#align=right [im_report_format_number $date_revenue $output_format $number_locale]"
-	"#align=right <b>[im_report_format_number [expr round(100.0 * ($date_revenue - $prev_revenue)) / 100.0] $output_format $number_locale]</b>"
+	"#align=right <b>[im_report_format_number $revenue_in_interval $output_format $number_locale]</b>"
 
 	"#align=right [im_report_format_number $prev_profit $output_format $number_locale]"
 	"#align=right [im_report_format_number $date_profit $output_format $number_locale]"
-	"#align=right <b>[im_report_format_number [expr round(100.0 * ($date_profit - $prev_profit)) / 100.0] $output_format $number_locale]</b>"
+	"#align=right <b>[im_report_format_number $profit_in_interval $output_format $number_locale]</b>"
 }
 
 
@@ -247,14 +250,14 @@ set revenue_counter [list \
 	pretty_name "Revenue" \
 	var revenue_total \
 	reset 0 \
-	expr "\$revenue+0" \
+	expr "\$revenue_in_interval+0" \
 ]
 
 set profit_counter [list \
 	pretty_name "Profit" \
 	var profit_total \
 	reset 0 \
-	expr "\$profit+0" \
+	expr "\$profit_in_interval+0" \
 ]
 
 
