@@ -167,7 +167,7 @@ set report_sql "
 			) p
 		) main_p
 	where
-		('Total' = department || department = :dept) and
+		('Total' = :dept OR department = :dept) and
 		(revenue > 0 OR external_cost > 0 OR internal_cost > 0)
 	order by
 		revenue DESC
