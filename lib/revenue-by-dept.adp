@@ -3,31 +3,35 @@
 Ext.require(['Ext.chart.*', 'Ext.Window', 'Ext.fx.target.Sprite', 'Ext.layout.container.Fit']);
 Ext.onReady(function () {
 
+    // The store with revenue by department data
     revenueByDeptsStore = Ext.create('Ext.data.Store', {
         fields: @header_json;noquote@,
-	autoLoad: true,
+	autoLoad: false,					// load handled manually
 	proxy: {
             type: 'rest',
-            url: '/intranet-reporting-dashboard/revenue-by-dept.json',
+            url: '/intranet-reporting-dashboard/revenue-by-dept.json',	// data-source for this indicator
             extraParams: {					// Parameters to the data-source
-		diagram_interval: '@diagram_default_interval@',	// 
-		diagram_fact: '@diagram_default_fact@',		// 
-		diagram_dept_sql: "@diagram_dept_sql;noquote@"	// 
+		diagram_interval: '@diagram_default_interval@',	// default interval to start with ('all_time')
+		diagram_fact: '@diagram_default_fact@',		// Revenue or profit?
+		diagram_dept_sql: "@diagram_dept_sql;noquote@"	// Allows to select custom "department".
             },
             reader: { type: 'json', root: 'data' }
-	}
+	},
+	data: [{'Date': new Date("@axis_to_date@")}]		// Dummy content for store to avoid slow display since 1970-01-01...
     });
 
+    // value range for time interval select box
     var revenueByDeptsIntervalStore = Ext.create('Ext.data.Store', {
         fields: ['display', 'value'],
         data: [
             {"display":"<%=[lang::message::lookup "" intranet-reporting-dashboard.All_Time "All Time"]%>", "value":"all_time"},
-            {"display":"<%=[lang::message::lookup "" intranet-reporting-dashboard.Last_Two_Years "Last Two Year"]%>", "value":"last_two_years"},
+            {"display":"<%=[lang::message::lookup "" intranet-reporting-dashboard.Last_Two_Years "Last Two Years"]%>", "value":"last_two_years"},
             {"display":"<%=[lang::message::lookup "" intranet-reporting-dashboard.Last_Year "Last Year"]%>", "value":"last_year"},
             {"display":"<%=[lang::message::lookup "" intranet-reporting-dashboard.Last_Quarter "Last Quarter"]%>", "value":"last_quarter"}
         ]
     });
 
+    // value range for what to show (revenue vs. profit)
     var revenueByDeptsFactStore = Ext.create('Ext.data.Store', {
         fields: ['display', 'value'],
         data: [
@@ -38,12 +42,12 @@ Ext.onReady(function () {
         ]
     });
 
+    // simple diagram...
     revenueByDeptsChart = new Ext.chart.Chart({
         xtype: 'chart',
         animate: false,
         store: revenueByDeptsStore,
         legend: { position: 'right' },
-        insetPadding: 20,
         theme: 'Base:gradients',
         axes: [{
             type: 'Numeric',
@@ -54,16 +58,16 @@ Ext.onReady(function () {
             type: 'Time',
             position: 'bottom',
             fields: ['Date'],
-            dateFormat: 'j M y',
+            dateFormat: 'M Y',
             constraint: false,
             step: [Ext.Date.MONTH, 1],
-            // fromDate: new Date('2019-01-01'),
             toDate: new Date('@axis_to_date@'),
             label: {rotate: {degrees: 315}}
         }],
         series: @series_list_json;noquote@
     });
 
+    // Window around diagram with drop select boxes that reload data when operated
     var revenueByDeptsPanel = Ext.create('widget.panel', {
         width: @diagram_width@,
         height: @diagram_height@,
@@ -115,6 +119,8 @@ Ext.onReady(function () {
         ],
         items: revenueByDeptsChart
     });
+
+    revenueByDeptsStore.load();
 });
 </script>
 
