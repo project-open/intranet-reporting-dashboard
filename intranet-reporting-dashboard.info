@@ -29,7 +29,8 @@
         <callbacks>
         </callbacks>
         <parameters>
-        <!-- No version parameters -->
+            <parameter datatype="number"  min_n_values="1"  max_n_values="1"  name="RevenueByDeptWithTotalP"  default="0" description="Should we show the Total in the Revenue by Department indicator? The Total will change the scale of the indicator, so it's not that recommended."/>
+            <parameter datatype="number"  min_n_values="1"  max_n_values="1"  name="RevenueByDeptUseQuotesAsProxyForInvoicesDays"  default="0" description="Can we use quoted amounts as a proxy for invoices, while the project is not yet closed? Default is '0' in order to disable this feature. Reasonable values could be 30 or 60, meaning that 30 or 60 days after the end_date of the project the indicator would use the invoiced amount instead of the quoted amount, assuming that it will take so long in order to write invoices."/>
         </parameters>
 
     </version>

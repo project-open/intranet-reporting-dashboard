@@ -39,7 +39,10 @@ if {![im_permission $current_user_id view_companies_all] || ![im_permission $cur
     ad_script_abort
 }
 
+set enable_total_p [parameter::get_from_package_key -package_key "intranet-reporting-dashboard" -parameter "RevenueByDeptWithTotalP" -default 1]
 set default_currency [im_parameter -package_id [im_package_cost_id] "DefaultCurrency" "" "EUR"]
+set use_quotes_as_proxy_for_invoices_days [parameter::get_from_package_key -package_key "intranet-reporting-dashboard" -parameter RevenueByDeptUseQuotesAsProxyForInvoicesDays -default 0]
+
 
 set default_diagram_dept_sql "coalesce((select cost_center_name from im_cost_centers where cost_center_id = project_cost_center_id), 'none')"
 if {"" eq $diagram_dept_sql} {
@@ -163,6 +166,7 @@ foreach now $months {
     }
 
     # Extract a list of revenues by dept, following the list of depts
+    set total 0.0
     foreach dept $dept_list {
 	set value 0.0; # current value
 	if {[info exists hash($dept-$diagram_fact)]} { set value $hash($dept-$diagram_fact) }
@@ -175,6 +179,12 @@ foreach now $months {
 	set diff [expr round(1000.0 * ($value - $old_value)) / 1000.0]
 	lappend rev_line "'$dept': $diff"
 
+	set total [expr $total + $diff]
+    }
+
+    if {$enable_total_p} {
+	set total [expr round(1000.0 * $total) / 1000.0]
+	lappend rev_line "'Total': $total"
     }
 
     # Skip the first row, because it starts with 0

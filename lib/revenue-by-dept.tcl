@@ -19,6 +19,8 @@ if {![info exists diagram_default_interval] || "" eq $diagram_default_interval} 
 if {![info exists diagram_default_fact] || "" eq $diagram_default_fact} { set diagram_default_fact "revenue" }
 if {![info exists diagram_min_start_date]} { set diagram_min_start_date "2015-01-01" }
 
+set enable_total_p [parameter::get_from_package_key -package_key "intranet-reporting-dashboard" -parameter RevenueByDeptWithTotalP -default 1]
+set use_quotes_as_proxy_for_invoices_days [parameter::get_from_package_key -package_key "intranet-reporting-dashboard" -parameter RevenueByDeptUseQuotesAsProxyForInvoicesDays -default 0]
 
 # ----------------------------------------------------
 # dept_sql - how to determine the department or area?
@@ -49,6 +51,7 @@ set default_currency [im_parameter -package_id [im_package_cost_id] "DefaultCurr
 
 # Get the list of all departments
 set dept_list [db_list dept_list "select dept from (select distinct $diagram_dept_sql as dept from im_projects) t order by lower(dept)"]
+if {$enable_total_p} { set dept_list [lappend dept_list "Total"] }
 set dept_list_json "\['[join $dept_list "', '"]'\]"
 
 # The header of the Sencha store:
@@ -76,7 +79,7 @@ foreach dept $dept_list {
 		    }	   
 		},
                 tips: { width: 200, renderer: function(storeItem, item) { 
-                    this.setTitle('$dept:<br>Date: '+storeItem.get('Date').toISOString().substring(0,10)+',<br> Revenues: '+storeItem.get('$dept')); 
+                    this.setTitle('$dept:<br>Date: '+storeItem.get('Date').toISOString().substring(0,7)+',<br> Revenues: '+storeItem.get('$dept')); 
                 }}
             }"
 }
