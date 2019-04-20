@@ -55,14 +55,16 @@ Ext.onReady(function () {
             fields: @dept_list_json;noquote@,
             title: 'Revenue (x 1000 @default_currency@)'
         }, {
-            type: 'Time',
+            title: false,
+            type: 'Category',
             position: 'bottom',
             fields: ['Date'],
-            dateFormat: 'M Y',
-            constraint: false,
-            step: [Ext.Date.MONTH, 1],
-            toDate: new Date('@axis_to_date@'),
-            label: {rotate: {degrees: 315}}
+	    label: {
+		rotate: {degrees: 315},
+                renderer: function(v) {
+		    return Ext.Date.format(v, 'M y'); 
+                }
+	    }
         }],
         series: @series_list_json;noquote@
     });

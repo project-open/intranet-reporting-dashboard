@@ -69,7 +69,7 @@ foreach dept $dept_list {
                 highlight: {size: 7, radius: 7},
 		listeners: {
 		    'itemclick': function(item, event) {
-		        var date = item.value\[0\].toISOString().substring(0,10);
+		        var date = item.storeItem.get('Date').toISOString().substring(0,10);
 			var value = item.value\[1\];
 			var dept = item.series.yField;
 			var url = '/intranet-reporting-dashboard/revenue-by-dept-details';

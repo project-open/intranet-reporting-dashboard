@@ -172,7 +172,6 @@ set report_sql "
 	order by
 		revenue DESC
 "
-
 # ad_return_complaint 1 [im_ad_hoc_query -format html $report_sql]
 
 # ------------------------------------------------------------
