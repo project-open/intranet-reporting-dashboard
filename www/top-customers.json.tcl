@@ -20,7 +20,7 @@ ad_page_contract {
 set current_user_id [ad_conn user_id]
 if {![im_permission $current_user_id view_companies_all] || ![im_permission $current_user_id view_finance]} { 
     set json "{\"success\": false, \"message\": \"Insufficient permissions - you need view_companies_all and view_finance.\" }"
-    doc_return 200 "text/html" $json
+    doc_return 400 "application/json" $json
     ad_script_abort
 }
 
@@ -39,7 +39,7 @@ switch $diagram_interval {
     all_time { set top_customer_interval_sql "" }
     default {
 	set json "{\"success\": false, \"message\": \"Invalid diagram_interval option: '$diagram_interval'.\" }"
-	doc_return 200 "text/html" $json
+	doc_return 400 "application/json" $json
 	ad_script_abort
     }
 }
@@ -91,5 +91,5 @@ multirow foreach top_customers {
     lappend data_list "{\"name\": \"$customer_name\", \"value\": $customer_revenues }"
 }
 set json "{\"success\": true, \"message\": \"Data loaded\", \"data\": \[\n[join $data_list ",\n"]\n\]}"
-doc_return 200 "text/html" $json
+doc_return 200 "application/json" $json
 

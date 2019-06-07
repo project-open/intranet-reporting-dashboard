@@ -19,7 +19,7 @@ set current_user_id [ad_conn user_id]
 im_project_permissions $current_user_id $diagram_project_id view read write admin
 if {!$read} {
     set json "{\"success\": false, \"message\": \"Insufficient permissions - you need read permissions for project #$diagram_project_id.\" }"
-    doc_return 200 "text/html" $json
+    doc_return 400 "application/json" $json
     ad_script_abort
 }
 
@@ -246,5 +246,5 @@ foreach epoch $timeline_list {
 }
 
 set json "{\"success\": true, \"message\": \"$message\", \"data\": \[\n[join $json_lines ",\n"]\n\]}"
-doc_return 200 "text/html" $json
+doc_return 200 "application/json" $json
 

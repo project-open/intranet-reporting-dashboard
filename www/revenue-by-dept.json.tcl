@@ -35,7 +35,7 @@ ad_page_contract {
 set current_user_id [ad_conn user_id]
 if {![im_permission $current_user_id view_companies_all] || ![im_permission $current_user_id view_finance]} { 
     set json "{\"success\": false, \"message\": \"Insufficient permissions - you need view_companies_all and view_finance.\" }"
-    doc_return 200 "text/html" $json
+    doc_return 400 "application/json" $json
     ad_script_abort
 }
 
@@ -70,7 +70,7 @@ switch $diagram_interval {
     last_quarter { set diagram_start_date [db_string year "select now()::date - 90 - 31"] }
     default {
 	set json "{\"success\": false, \"message\": \"Invalid diagram_interval option: '$diagram_interval'.\" }"
-	doc_return 200 "text/html" $json
+	doc_return 400 "application/json" $json
 	ad_script_abort
     }
 }
@@ -200,5 +200,5 @@ foreach now $months {
 # ----------------------------------------------------
 
 set json "{\"success\": true, \"message\": \"Data loaded\", \"data\": \[\n[join $rev_rows ",\n"]\n\]}"
-doc_return 200 "text/html" $json
+doc_return 200 "application/json" $json
 
