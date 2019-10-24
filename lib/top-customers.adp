@@ -22,6 +22,7 @@ Ext.onReady(function () {
 	fields: ['display', 'value'],
 	data : [
             {"display":"<%=[lang::message::lookup "" intranet-reporting-dashboard.All_Time "All time"]%>", "value":"all_time"},
+            {"display":"<%=[lang::message::lookup "" intranet-reporting-dashboard.Last_Four_Years "Last Four Years"]%>", "value":"last_four_years"},
             {"display":"<%=[lang::message::lookup "" intranet-reporting-dashboard.Last_Year "Last Year"]%>", "value":"last_year"},
             {"display":"<%=[lang::message::lookup "" intranet-reporting-dashboard.Last_Quarter "Last Quarter"]%>", "value":"last_quarter"}
 	]

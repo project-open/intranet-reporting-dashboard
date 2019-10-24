@@ -34,6 +34,7 @@ set default_currency [im_parameter -package_id [im_package_cost_id] "DefaultCurr
 
 switch $diagram_interval {
     last_year { set top_customer_interval_sql "and c.effective_date >= now()::date - 365" }
+    last_four_years { set top_customer_interval_sql "and c.effective_date >= now()::date - 365 * 4" }
     last_quarter { set top_customer_interval_sql "and c.effective_date >= now()::date - 90" }
     last_month { set top_customer_interval_sql "and c.effective_date >= now()::date - 30" }
     all_time { set top_customer_interval_sql "" }
