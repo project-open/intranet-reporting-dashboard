@@ -914,3 +914,39 @@ ad_proc -public im_dashboard_revenue_by_dept {
 
 
 
+
+# ---------------------------------------------------------------
+#  Revenues by month over year
+# ---------------------------------------------------------------
+
+ad_proc -public im_dashboard_revenue_by_year_monthly {
+    {-diagram_width 600}
+    {-diagram_height 500}
+    {-diagram_title ""}
+    {-diagram_default_interval "3" }
+    {-diagram_default_fact "revenue" }
+} {
+    Returns a HTML component with a timeline of a revenues by month
+} {
+    # Sencha check and permissions
+    if {![im_sencha_extjs_installed_p]} { return "" }
+    set current_user_id [ad_conn user_id]
+    if {![im_permission $current_user_id view_finance]} { return "You don't have the right to see financial data" }
+    im_sencha_extjs_load_libraries
+
+    # Call the portlet page
+    set params [list \
+                    [list diagram_width $diagram_width] \
+                    [list diagram_height $diagram_height] \
+                    [list diagram_title $diagram_title] \
+                    [list diagram_default_interval $diagram_default_interval] \
+                    [list diagram_default_fact $diagram_default_fact] \
+    ]
+
+
+    set result [ad_parse_template -params $params "/packages/intranet-reporting-dashboard/lib/revenue-by-year-monthly"]
+    return [string trim $result]
+}
+
+
+

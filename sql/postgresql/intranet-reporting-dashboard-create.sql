@@ -550,3 +550,26 @@ SELECT acs_permission__grant_permission(
 	'read'
 );
 
+
+
+
+-- Revenues by year over months
+--
+SELECT im_component_plugin__new (
+	null, 'im_component_plugin', now(), null, null, null,
+	'Revenue by Year',      		-- plugin_name
+	'intranet-reporting-dashboard',		-- package_name
+	'left',					-- location
+	'/intranet-invoices/dashboard',		-- page_url
+	null,					-- view_name
+	130,					-- sort_order
+	'im_dashboard_revenue_by_year_monthly -diagram_width 600 -diagram_height 500',
+	'lang::message::lookup "" intranet-reporting-dashboard.Revenue_by_Year_over_Months "Revenue by Year"'
+);
+
+SELECT acs_permission__grant_permission(
+	(select plugin_id from im_component_plugins where plugin_name = 'Revenue by Year'),
+	(select group_id from groups where group_name = 'Senior Managers'), 
+	'read'
+);
+
