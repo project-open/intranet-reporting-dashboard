@@ -78,48 +78,6 @@ Ext.onReady(function () {
         renderTo: '@diagram_id@',
         layout: 'fit',
         header: false,
-        tbar: [
-            {
-                xtype: 'combo',
-                editable: false,
-                fieldLabel: '<%=[lang::message::lookup "" intranet-reporting-dashboard.Interval Interval]%>',
-                store: revenueByYearsIntervalStore,
-                mode: 'local',
-                displayField: 'display',
-                valueField: 'value',
-                triggerAction: 'all',
-                width: 250,
-                forceSelection: true,
-                value: '@diagram_default_interval@',
-                listeners:{select:{fn:function(combo, comboValues) {
-                    var value = comboValues[0].data.value;
-                    var extraParams = revenueByYearsStore.getProxy().extraParams;
-                    extraParams.diagram_interval = value;
-                    revenueByYearsStore.load();
-                }}}
-            }, '->', 
-            {
-                xtype: 'combo',
-                editable: false,
-                fieldLabel: '<%=[lang::message::lookup "" intranet-reporting-dashboard.Fact_Dimension "Fact Dimension"]%>',
-                store: revenueByYearsFactStore,
-                mode: 'local',
-                displayField: 'display',
-                valueField: 'value',
-                triggerAction: 'all',
-                width: 250,
-                forceSelection: true,
-                value: '@diagram_default_fact@',
-                listeners:{select:{fn:function(combo, comboValues) {
-                    var value = comboValues[0].data.value;
-                    var extraParams = revenueByYearsStore.getProxy().extraParams;
-                    extraParams.diagram_fact = value;
-                    revenueByYearsStore.load();
-                }}}
-            }
-
-
-        ],
         items: revenueByYearsChart
     });
 
