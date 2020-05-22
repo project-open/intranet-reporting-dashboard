@@ -31,6 +31,7 @@ set default_currency [im_parameter -package_id [im_package_cost_id] "DefaultCurr
 
 # Get the list of all years
 set year_list [db_list year_list "select distinct 'invoices_' || to_char(im_month_enumerator, 'YYYY') as year from im_month_enumerator(:diagram_min_start_date::date, now()::date) order by year"]
+set year_list_names [db_list year_list_names "select distinct to_char(im_month_enumerator, 'YYYY') as year from im_month_enumerator(:diagram_min_start_date::date, now()::date) order by year"]
 set year_list_json "\['[join $year_list "', '"]'\]"
 
 # The header of the Sencha store:
@@ -39,10 +40,12 @@ set header_json "\['[join $header_list "', '"]'\]"
 
 # Series JSON
 set series_list {}
+set cnt 0
 foreach year $year_list {
+    set year_name [lindex $year_list_names $cnt]
     lappend series_list "{
                 type: 'line',
-                title: '$year',
+                title: '$year_name',
                 xField: 'month', yField: '$year', 
                 axis: 'left', 
                 highlight: {size: 7, radius: 7},
@@ -60,6 +63,7 @@ foreach year $year_list {
                     this.setTitle('$year:<br>Year: '+storeItem.get('Year').toISOString().substring(0,7)+',<br> Revenues: '+storeItem.get('$year')); 
                 }}
             }"
+    incr cnt
 }
 set series_list_json "\[\n            [join $series_list ",\n            "]\n        \]"
 
