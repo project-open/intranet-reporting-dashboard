@@ -1,5 +1,6 @@
 <master>
-<property name="header_stuff"><SCRIPT Language="JavaScript" src="/resources/diagram/diagram/diagram.js"></SCRIPT></property>
+<property name="header_stuff">
+<!-- <SCRIPT Language="JavaScript" src="/resources/diagram/diagram/diagram.js"></SCRIPT></property> -->
 
 
 <h2>First Header</h2>

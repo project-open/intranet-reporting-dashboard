@@ -1,5 +1,5 @@
 <div id="@diagram_id@" style="height: @diagram_height@px; width: @diagram_width@px"></div>
-<script type='text/javascript'>
+<script type='text/javascript' <if @::__csp_nonce@ not nil>nonce="@::__csp_nonce;literal@"</if>>
 Ext.require(['Ext.chart.*', 'Ext.Window', 'Ext.fx.target.Sprite', 'Ext.layout.container.Fit']);
 Ext.onReady(function () {
 

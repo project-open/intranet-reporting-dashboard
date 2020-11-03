@@ -653,7 +653,7 @@ ad_proc im_dashboard_pie_chart {
 
     return "
         <div style='$border position:relative;top:0px;height:${diagram_y_size}px;width:${diagram_x_size}px;'>
-        <SCRIPT Language=JavaScript>
+        <SCRIPT type=\"text/javascript\" nonce=\"[im_csp_nonce]\">
         P=new Array();
         document.open();
         _BFont=\"color:\#$font_color;font-size:${font_size}pt;$font_style\";
@@ -775,7 +775,7 @@ ad_proc im_dashboard_histogram {
 
     set histogram_html "
         <div style='$border position:relative;top:0px;height:[expr {$diagram_y_size+20}]px;width:${diagram_x_size}px;'>
-	<SCRIPT Language=JavaScript type='text/javascript'>
+        <SCRIPT type=\"text/javascript\" nonce=\"[im_csp_nonce]\">
 	document.open();
 	var $diag=new Diagram();
 	_BFont=\"font-family:Verdana;font-weight:normal;font-size:8pt;line-height:10pt;\";

@@ -2,7 +2,7 @@
 <link rel='stylesheet' href='/sencha-extjs-v421/resources/css/ext-all.css'  type='text/css' media='screen'>
 <script type='text/javascript' src='/sencha-extjs-v421-dev/ext-all-debug-w-comments.js'></script>
 <div id=diagram_12345></div>
-<script type='text/javascript'>
+<script type='text/javascript' <if @::__csp_nonce@ not nil>nonce="@::__csp_nonce;literal@"</if>>
 
 Ext.require(['Ext.chart.*', 'Ext.Window', 'Ext.fx.target.Sprite', 'Ext.layout.container.Fit']);
 Ext.onReady(function () {
