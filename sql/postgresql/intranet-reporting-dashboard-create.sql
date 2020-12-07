@@ -573,3 +573,24 @@ SELECT acs_permission__grant_permission(
 	'read'
 );
 
+
+-- Revenues by year over months
+--
+SELECT im_component_plugin__new (
+	null, 'im_component_plugin', now(), null, null, null,
+	'Volume of Project Phases',      		-- plugin_name
+	'intranet-reporting-dashboard',		-- package_name
+	'top',					-- location
+	'/intranet-invoices/dashboard',		-- page_url
+	null,					-- view_name
+	10,					-- sort_order
+	'im_dashboard_project_phases_volume -diagram_width 600 -diagram_height 500',
+	'lang::message::lookup "" intranet-reporting-dashboard.Project_Phases_Volume "Volume of Project Phases"'
+);
+
+SELECT acs_permission__grant_permission(
+	(select plugin_id from im_component_plugins where plugin_name = 'Volume of Project Phases'),
+	(select group_id from groups where group_name = 'Senior Managers'), 
+	'read'
+);
+
