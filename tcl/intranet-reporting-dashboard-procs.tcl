@@ -285,7 +285,7 @@ ad_proc -public im_dashboard_histogram_sql_tautenhahn {
     { -diagram_width 400 }
     { -restrict_to_object_type_id 0 }
 } {
-    Returns a dashboard component using the Tautenhan JavaScript library.
+    Returns a dashboard component using the Tautenhan JS library.
     Requires a SQL statement like 
     "select im_category_from_id(project_type_id), count(*) from im_projects group by project_type_id"
     @param object_id ID of a container object.
@@ -561,7 +561,7 @@ ad_proc im_dashboard_pie_chart {
     { -font_style "font-family:Verdana;font-weight:normal;line-height:10pt;" }
 } {
     Returns a formatted HTML text to display a piechart
-    based on Lutz Tautenhahn' "Javascript Diagram Builder", v3.3.
+    based on Lutz Tautenhahn' "JS Diagram Builder", v3.3.
     @param max_entries Determines the max. number of entries
            in the pie chart. It also determines the Y-size of the diagram.
     @param values A list of {name value} pairs to be displayed.
@@ -686,7 +686,7 @@ ad_proc im_dashboard_histogram {
     { -font_style "font-family:Verdana;font-weight:normal;line-height:10pt;" }
 } {
     Returns a formatted HTML text to display a histogram chart
-    based on Lutz Tautenhahn' "Javascript Diagram Builder", v3.3.
+    based on Lutz Tautenhahn' "JS Diagram Builder", v3.3.
 
     Short example:
 	<pre>set histogram_chart [im_dashboard_histogram \
