@@ -38,7 +38,10 @@ ad_proc -public im_reporting_dashboard_sweeper { } {
     # Delete _values_. 
     # It's not necessary to delete the cube definitions
     # (im_reporting_cubes). They also contain counters.
-    db_dml del_values "delete from im_reporting_cube_values"
+    set exists_p [im_table_exists "im_reporting_cube_values"]
+    if {$exists_p} {
+	db_dml del_values "delete from im_reporting_cube_values"
+    }
 }
 
 # ----------------------------------------------------------------------
