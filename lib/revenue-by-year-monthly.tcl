@@ -31,6 +31,8 @@ set default_currency [im_parameter -package_id [im_package_cost_id] "DefaultCurr
 
 # Get the list of all years
 set year_list [db_list year_list "select distinct 'invoices_' || to_char(im_month_enumerator, 'YYYY') as year from im_month_enumerator(:diagram_min_start_date::date, now()::date) order by year"]
+
+# Fraber 2023-03-31: Why added a year_name?
 set year_list_names [db_list year_list_names "select distinct to_char(im_month_enumerator, 'YYYY') as year from im_month_enumerator(:diagram_min_start_date::date, now()::date) order by year"]
 set year_list_json "\['[join $year_list "', '"]'\]"
 
