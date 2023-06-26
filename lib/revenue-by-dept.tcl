@@ -74,7 +74,7 @@ foreach dept $dept_list {
 			var dept = item.series.yField;
 			var url = '/intranet-reporting-dashboard/revenue-by-dept-details';
 			url = url + '?date='+date;
-			url = url +'&dept='+dept +'&dept_sql=[im_quotejson $diagram_dept_sql]';
+			url = url +'&dept='+dept +'&dept_sql=[ns_quotehtml $diagram_dept_sql]';
 			window.open(url, '_blank');
 		    }	   
 		},
