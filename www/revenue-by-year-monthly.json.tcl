@@ -53,7 +53,7 @@ for {set year $start_year} {$year <= $today_year} {incr year} {
     lappend year_sql_list "
 		,(	select	coalesce(sum(c.amount), 0.0)
 			from	im_costs c
-			where	c.cost_type_id = 3700 and 
+			where	c.cost_type_id in (select * from im_sub_categories(3700)) and 
 				to_char(c.effective_date, 'YYYY') = '$year' and 
 				to_char(c.effective_date, 'MM') = months.month
 		) as invoices_$year"
